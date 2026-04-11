@@ -25,7 +25,7 @@ public class MatchPanel extends JPanel {
         super.setLayout(new GridBagLayout());
         
         // khởi tạo thành phần
-        this.boardPanel = new WhiteBoardPanel();
+        this.boardPanel = new BlackBoardPanel();
         
         this.featurePanel = new FeaturePanel();
         
