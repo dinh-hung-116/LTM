@@ -1,6 +1,7 @@
 package chess.gui.Class;
 
 
+import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -35,6 +36,9 @@ public class TilePanel extends JPanel {
     // BoardPanel để Tile tạo yêu cầu cho bàn cờ khi xử lý chuột
     private BoardPanel boardPanel;
     
+    // dùng để kiểm tra màu của quân cờ nếu ô có tồn tại quân cờ
+    private Side side;
+    
     //######################################
     public TilePanel(int index, Color tileColor, BoardPanel boardPanel) {
         super(new GridLayout());
@@ -44,6 +48,7 @@ public class TilePanel extends JPanel {
         this.isHighlighted = false;
         this.pieceImage = null;
         this.boardPanel = boardPanel;
+        this.side = null;
         
         // khởi tạo kích thước
         this.setPreferredSize(guiUtils.TILE_PANEL_DIMENSION);
@@ -55,11 +60,13 @@ public class TilePanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 // chuột trái
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    
+                   boardPanel.handlerMovePiece(index);
                 } 
                 // chuột phải
                 else {
                     // dừng mọi hành động
+                    // tạm thời xóa highligh ở ô dược chọn
+                    boardPanel.clearHighlightTileNMove(index);
 
                 }
             }
@@ -72,21 +79,26 @@ public class TilePanel extends JPanel {
         return this.index;
     }
     
+    // lấy Side(màu) của quân trong ô cờ
+    public Side getSide() {
+        return this.side;
+    }
+    
+    // lấy isHighlighted
+    public boolean getIsHighlighted() {
+        return this.isHighlighted;
+    }
+    
     // Đặt ảnh cho quân cờ
-    public void setPieceImage(BufferedImage pieceImage) {
+    public void setPieceImage(BufferedImage pieceImage, Side side) {
         this.pieceImage = pieceImage;
+        this.side = side;
         repaint();
     }
 
     // Lấy ảnh của quân cờ trong ô hiện tại
     public BufferedImage getPieceImage() {
         return pieceImage;
-    }
-    
-   
-    // Xóa ảnh quân cờ
-    public void clearPieceImage() {
-        this.pieceImage = null;
     }
 
     // highlight ô cờ
@@ -95,9 +107,10 @@ public class TilePanel extends JPanel {
         repaint();
     }
 
-    // đưa ô cờ về lại trạng thái ban đầu(chỉ có màu)
+    // đưa ô cờ về lại trạng thái ban đầu(ô trống)
     public void clear() {
         this.pieceImage = null;
+        this.side = null;
         this.isHighlighted = false;
         repaint();
     }

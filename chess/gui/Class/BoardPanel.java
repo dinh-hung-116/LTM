@@ -5,9 +5,11 @@ import chess.gui.Assets;
 import chess.gui.Class.*;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Square;
+import io.github.wolfraam.chessgame.move.Move;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -53,10 +55,8 @@ public abstract class BoardPanel extends JPanel{
     // dùng mảng tĩnh do luôn có 64 ô cờ
     protected TilePanel[] boardTiles;
     
-    // biến này để lưu vị trí hiện tại và đích đến dùng trong quá trình di chuyển quân cờ
-    protected Integer sourceTile = null;
-    
-    protected Integer destTile = null;
+    // biến này để lưu vị trí hiện tại dùng trong quá trình di chuyển quân cờ
+    protected Integer sourceTile;
     
     // biến này dùng để ngăn người dùng spam chuột, phím khi thực hiện di chuyển
     // protected boolean isProcessingMove = false;
@@ -78,6 +78,9 @@ public abstract class BoardPanel extends JPanel{
         
         // Khởi tạo mảng
         this.boardTiles = new TilePanel[64];
+        
+        // biến lưu ô
+        this.sourceTile = null;
         
         // Assets
         this.image = new Assets();
@@ -127,8 +130,23 @@ public abstract class BoardPanel extends JPanel{
     
     
     // phương thức thực hiện di chuyển quân
-    public void movePiece(Square source, Square dest) {
+    public boolean movePiece(int source, int dest) {
+        // map tọa độ index sang enigne
+        Square from = this.fromTilePanelToSquare(source);
+        Square to = this.fromTilePanelToSquare(dest);
+        
+        // tạo Move
+        Move move = new Move(from, to);
+        
+        // kiểm tra move
+        if(this.chessGame.isLegalMove(move)) {
+            // nếu đúng thì di chuyển
+            this.chessGame.playMove(move);
+            return true;
         }
+        // nếu sai thì báo sai
+        return false;
+    }
     
     
     public void printMove(int source, int dest) {
@@ -148,31 +166,64 @@ public abstract class BoardPanel extends JPanel{
     }
     
     // Phương thức tắt highlight các ô là nước đi hợp lệ
-    // input là List<Move> ?
-    public void clearLegalMovesHighlight() {
+    // input là index của ô có quân cờ
+    public void clearLegalMovesHighlight(int index) {
+       // tắt highlight tại index
+       clearTileHighlight(index);
        
+       // tắt higlight nước đi hợp lệ
+       // Lấy Set<Move> từ ô index
+       HashSet<Move> move = 
+               (HashSet<Move>) this.chessGame.getLegalMoves(this.fromTilePanelToSquare(index));
+       
+       if(move.isEmpty()) System.out.println("Set with index " + index + " is empty!");
+       // di chuyển qua từng Move và tắt Square
+       for(Move mv : move) {
+           this.boardTiles[this.fromSquareToIndex(mv.to)].setHighlighted(false);
+           //System.out.println(mv.from + "->" + mv.to);
+       }
+    }
+    
+    // như trên nhưng phiên bản có input là (int, (HashSet) Set<Move>)
+    public void clearLegalMovesHighlight(HashSet<Move> move) {
+       // di chuyển qua từng Move và tắt TilePanel tương ứng với Square
+       for(Move mv : move) {
+           this.boardTiles[this.fromSquareToIndex(mv.to)].setHighlighted(false);
+           //System.out.println(mv.from + "->" + mv.to);
+       }
     }
     
     // phương thức kết hợp hai phương thức tắt highlight
-    public void clearHighlightTileNMove() {
-        
+    public void clearHighlightTileNMove(int index) {
+        clearTileHighlight(index);
+        clearLegalMovesHighlight(index);
     }
     
     
     // Phương thức highlight 1 ô
     public void tileHighlight(int index) {
-      this.boardTiles[index].setHighlighted(true);
+        this.boardTiles[index].setHighlighted(true);
     }
     
     // Phương thức highlight các nước đi hợp lệ
-    // input là List<Move> ?
-    public void legalMovesHighlight() {
-      
+    // input là index
+    public void legalMovesHighlight(int index) {
+        // Lấy Set<Move> từ ô index
+       HashSet<Move> move = 
+               (HashSet<Move>) this.chessGame.getLegalMoves(this.fromTilePanelToSquare(index));
+       
+       // di chuyển qua từng Move và bật highlight tại Square
+       for(Move mv : move) {
+           this.boardTiles[this.fromSquareToIndex(mv.to)].setHighlighted(true);
+       }
     }
     
     // phương thức kết hợp hai phương thức highlight
-    public void highlightTileNMove() {
-        
+    public void highlightTileNMove(int index) {
+        // bật ô
+        tileHighlight(index);
+        // bật ô các nước đi hợp lệ
+        legalMovesHighlight(index);
     }
     
     //########
