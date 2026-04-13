@@ -1,6 +1,6 @@
-package chess.gui.Class;
+package chess.gui.match.chessboard;
 
-import chess.gui.Assets;
+import gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
@@ -153,8 +153,15 @@ public class BlackBoardPanel extends BoardPanel {
                     this.clearTileHighlight(sourceTile);
                     this.clearLegalMovesHighlight(move);
                     this.clearTileHighlight(index);
-
+                    
+                    //==========
+                    // NETWORK
+                    //==========
+                    // to do: y như bên trắng
+                    
+                    //==========
                     this.sourceTile = null;
+                    
                 } else {
 
                     System.out.println("Illegal move (BLACK)");
@@ -165,6 +172,10 @@ public class BlackBoardPanel extends BoardPanel {
                     this.sourceTile = null;
                 }
             }
+        }
+        // NEYWORK
+        else {
+            // nhận nước đi của  bên trắng từ server
         }
     }
     

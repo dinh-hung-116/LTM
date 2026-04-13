@@ -1,8 +1,8 @@
-package chess.gui.Class;
+package chess.gui.match.chessboard;
 
 
-import chess.gui.Assets;
-import chess.gui.Class.*;
+import chess.gui.guiUtils;
+import gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;

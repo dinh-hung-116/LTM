@@ -1,7 +1,8 @@
-package chess.gui.Class;
+package chess.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 
 
 
@@ -32,6 +33,15 @@ public class guiUtils {
     public static final int USER_BOARD_GAP = 27;
     public static final int BOARD_FEATURE_GAP = 20;
     
+    // KHUNG ĐỒNG HỒ ĐẾM GIỜ(TẠM THỜI)
+    public static final int CLOCK_FRAME_HEIGHT = 44;
+    public static final int CLOCK_FRAME_WIDTH = FEATURE_FRAME_WIDTH;
+    public static final Dimension CLOCK_FRAME_DIMENSION = 
+            new Dimension(CLOCK_FRAME_WIDTH, CLOCK_FRAME_HEIGHT);
+    
+    // phông chữ đồng hồ
+    public static final Font CLOCK_FONT = new Font("Arial", Font.BOLD, 40);
+    
     // TILE PANEL
     public static final int TILE_SIZE = 66; 
     public static final Dimension TILE_PANEL_DIMENSION = new Dimension(TILE_SIZE, TILE_SIZE);
@@ -42,4 +52,11 @@ public class guiUtils {
 
     // màu xanh biển nhạt
     public static final Color HIGHLIGHT = new Color(100, 180, 255, 90);
+    
+    // thời lượng một ván cờ, 10'
+    public static final long MATCH_DURATION = 10 * 60 * 1000;
+    // thời lượng mỗi lượt trong ván đấu, 30s
+    public static final long TURN_DURATION = 30 * 1000;
+    
+    public static final Color MATCH_BG = Color.decode("#2c2b29");
 }

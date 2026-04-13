@@ -1,4 +1,4 @@
-package chess.gui;
+package gui.match.chessboard;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;

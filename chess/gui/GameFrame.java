@@ -1,16 +1,15 @@
-package chess.gui.Class;
+package chess.gui;
 
+import chess.gui.match.MatchPanel;
 import javax.swing.*;
 import java.awt.*;
-import chess.gui.Class.BoardPanel;
-import chess.gui.Assets;
 
-public class Table {
+public class GameFrame {
 
     private JFrame frame;
     private MatchPanel matchPanel;
 
-    public Table() {
+    public GameFrame() {
         frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
 
@@ -29,7 +28,7 @@ public class Table {
     public static void main(String[] args) {
             
         SwingUtilities.invokeLater(() -> {
-            new Table();
+            new GameFrame();
         });
         
     }

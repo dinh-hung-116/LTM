@@ -1,7 +1,7 @@
-package chess.gui.Class;
+package chess.gui.match.gamesidebar;
 
 
-import chess.gui.Class.guiUtils;
+import chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JLabel;

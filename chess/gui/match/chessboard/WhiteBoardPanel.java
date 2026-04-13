@@ -1,7 +1,7 @@
-package chess.gui.Class;
+package chess.gui.match.chessboard;
 
 
-import chess.gui.Assets;
+import gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
@@ -129,6 +129,13 @@ public class WhiteBoardPanel extends BoardPanel {
                         // tắt highlight tại ô index do phương thức highlight vẫn chạy khi bấm ô index
                         this.clearTileHighlight(index);
                         
+                        //==========
+                        // NETWORK
+                        //==========
+                        // to do: phần này gửi nước đi của bên trăng cho server
+                        
+                        //==========
+                        
                         // gán lại sourceTile
                         this.sourceTile = null;
                     }
@@ -146,12 +153,12 @@ public class WhiteBoardPanel extends BoardPanel {
                     }
                 }
             }
-            // #############
+            // NETWORK
             else {
-                // to do...
+                // bên đen(network)
+                // phần này nhận nước đi của bên đen từ server
             }
         }
-        
         
         //###################
     }

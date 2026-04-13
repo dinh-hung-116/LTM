@@ -1,6 +1,7 @@
-package chess.gui.Class;
+package chess.gui.match.chessboard;
 
 
+import chess.gui.guiUtils;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import java.awt.Color;
@@ -123,21 +124,69 @@ public class TilePanel extends JPanel {
     // Hàm này sẽ được chạy khi phương thức paint hoặc repaint được gọi
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+            super.paintComponent(g);
 
-        // 1. Tô màu ô trước
-        g.setColor(tileColor);
-        g.fillRect(0, 0, getWidth(), getHeight());
-
-        // 2. Highlight ô cờ nếu có(isHighlighted == true)
-        if (isHighlighted) {
-            g.setColor(guiUtils.HIGHLIGHT); // màu theo guiUitls
+            // 1. Tô màu ô trước
+            g.setColor(tileColor);
             g.fillRect(0, 0, getWidth(), getHeight());
+
+            // 2. Highlight ô cờ nếu có(isHighlighted == true)
+            if (isHighlighted) {
+                g.setColor(guiUtils.HIGHLIGHT); // màu theo guiUitls
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+
+            // 3. Tô màu quân cờ nếu có
+            if (pieceImage != null) {
+                g.drawImage(pieceImage, 0, 0, getWidth(), getHeight(), this);
+                /*
+                int topPadding = 4;
+                int sidePadding = 4;
+                int bottomPadding = 10; // extra space for file letters
+
+                g.drawImage(
+                    pieceImage,
+                    sidePadding,
+                    topPadding,
+                    getWidth() - 2 * sidePadding,
+                    getHeight() - topPadding - bottomPadding,
+                    this
+                );
+*/
+            }
+            
+            // 4. vẽ tọa độ(file và rank)
+            //drawNotation(g);
         }
 
-        // 3. Tô màu quân cờ nếu có
-        if (pieceImage != null) {
-            g.drawImage(pieceImage, 0, 0, getWidth(), getHeight(), this);
+        private void drawNotation(Graphics g) {
+        int row = index / 8;
+        int col = index % 8;
+
+        g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+
+        // 🎯 Rank (1–8) → only left column
+        if (col == 0) {
+            String rank = String.valueOf(8 - row);
+            g.setColor(getContrastColor());
+            g.drawString(rank, 5, 15);
         }
+
+        // 🎯 File (a–h) → only bottom row
+        if (row == 7) {
+            char fileChar = (char) ('a' + col);
+            String file = String.valueOf(fileChar);
+            g.setColor(getContrastColor());
+            g.drawString(file, getWidth() - 15, getHeight() - 5);
+        }
+    }
+        
+    private Color getContrastColor() {
+        int brightness = (tileColor.getRed() + tileColor.getGreen() + tileColor.getBlue()) / 3;
+
+        // softer colors instead of pure black/white
+        return brightness < 128 
+            ? new Color(240, 240, 240)  // off-white
+            : new Color(60, 60, 60);    // dark gray
     }
 }
