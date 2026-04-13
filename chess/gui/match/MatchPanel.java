@@ -6,8 +6,8 @@ import chess.gui.match.chessboard.BlackBoardPanel;
 import chess.gui.match.chessboard.BoardPanel;
 import chess.gui.guiUtils;
 import javax.swing.JPanel;
-import chess.gui.match.gamesidebar.UserInfoPanel;
-import chess.gui.match.gamesidebar.GameSideBarPanel;
+import chess.gui.match.matchinfo.UserInfoPanel;
+import chess.gui.match.matchinfo.MatchInfo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,7 +18,7 @@ public class MatchPanel extends JPanel {
     private BoardPanel boardPanel;
     
     // ô tính năng
-    private GameSideBarPanel featurePanel;
+    private MatchInfo featurePanel;
     
     // dùng để điều chỉnh layout
     private GridBagConstraints gbc;
@@ -32,7 +32,7 @@ public class MatchPanel extends JPanel {
         // khởi tạo thành phần
         this.boardPanel = new BlackBoardPanel();
         
-        this.featurePanel = new GameSideBarPanel();
+        this.featurePanel = new MatchInfo();
         
         this.gbc = new GridBagConstraints();
         

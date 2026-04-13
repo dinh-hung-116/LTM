@@ -1,4 +1,4 @@
-package chess.gui.match.gamesidebar;
+package chess.gui.match.matchinfo;
 
 
 import chess.gui.guiUtils;
@@ -9,10 +9,10 @@ import javax.swing.JPanel;
 
 
 // lớp này chứa đồng hồ đếm giờ, các nước đi đã thực hiện, chat,... 
-public class GameSideBarPanel extends JPanel {
+public class MatchInfo extends JPanel {
     //private CountDownTimerPanel clock;
     
-    public GameSideBarPanel() {
+    public MatchInfo() {
         this.setPreferredSize(guiUtils.FEATURE_FRAME_DIMENSION);
         this.setLayout(new BorderLayout());
         

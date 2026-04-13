@@ -1,6 +1,6 @@
-package chess.gui.match.gamesidebar;
+package chess.gui.match.matchinfo;
 
-import chess.gui.match.gamesidebar.CountDownTimer;
+import chess.gui.match.matchinfo.CountDownTimer;
 import chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Font;

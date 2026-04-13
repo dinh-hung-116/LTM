@@ -1,4 +1,4 @@
-package chess.gui.match.gamesidebar;
+package chess.gui.match.matchinfo;
 
 
 import chess.gui.guiUtils;
