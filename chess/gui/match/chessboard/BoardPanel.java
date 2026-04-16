@@ -1,7 +1,7 @@
-package chess.gui.match.chessboard;
+package gui.match.chessboard;
 
 
-import chess.gui.guiUtils;
+import gui.guiUtils;
 import gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Square;

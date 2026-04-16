@@ -1,6 +1,7 @@
 package gui.match.chessboard;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import javax.imageio.ImageIO;
 
 /*
@@ -52,9 +53,18 @@ public class Assets {
     }
 
     // 🔥 helper method (cleaner)
-    private BufferedImage loadImage(String fileName) throws Exception {
-        return ImageIO.read(
-            Assets.class.getResource("/chess/gui/resources/" + fileName)
-        );
+//    private BufferedImage loadImage(String fileName) throws Exception {
+//        return ImageIO.read(
+//            Assets.class.getResource("/chess/gui/resources/" + fileName)
+//        );
+//    }
+
+    private BufferedImage loadImage(String fileName) {
+        try {
+            return ImageIO.read(new File("chess/resources/" + fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

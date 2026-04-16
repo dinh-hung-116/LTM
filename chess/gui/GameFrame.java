@@ -1,6 +1,6 @@
-package chess.gui;
+package gui;
 
-import chess.gui.match.MatchPanel;
+import gui.match.MatchPanel;
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,7 +1,7 @@
-package chess.gui.match.matchinfo;
+package gui.match.matchinfo;
 
 
-import chess.gui.guiUtils;
+import gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JPanel;

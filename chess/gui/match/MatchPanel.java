@@ -1,13 +1,16 @@
-package chess.gui.match;
+package gui.match;
 
 // Lớp này chứa bàn cờ, khung tên người dùng và ô tính năng
 
-import chess.gui.match.chessboard.BlackBoardPanel;
-import chess.gui.match.chessboard.BoardPanel;
-import chess.gui.guiUtils;
+import gui.match.chessboard.BlackBoardPanel;
+import gui.match.chessboard.BoardPanel;
+import gui.guiUtils;
 import javax.swing.JPanel;
-import chess.gui.match.matchinfo.UserInfoPanel;
-import chess.gui.match.matchinfo.MatchInfo;
+import gui.match.chessboard.LocalBoardPanel;
+
+import gui.match.chessboard.WhiteBoardPanel;
+import gui.match.matchinfo.UserInfoPanel;
+import gui.match.matchinfo.MatchInfo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,7 +33,7 @@ public class MatchPanel extends JPanel {
         super.setLayout(new GridBagLayout());
         
         // khởi tạo thành phần
-        this.boardPanel = new BlackBoardPanel();
+        this.boardPanel = new LocalBoardPanel();
         
         this.featurePanel = new MatchInfo();
         

@@ -1,4 +1,4 @@
-package chess.gui.match.chessboard;
+package gui.match.chessboard;
 
 import gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.board.Side;
