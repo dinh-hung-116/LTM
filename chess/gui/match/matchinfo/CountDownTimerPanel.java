@@ -3,6 +3,7 @@ package chess.gui.match.matchinfo;
 import chess.gui.match.matchinfo.CountDownTimer;
 import chess.gui.guiUtils;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JFrame;
@@ -15,57 +16,73 @@ import javax.swing.Timer;
 * Tạm thời chỉ dùng matchTimer
 */
 public class CountDownTimerPanel extends JPanel {
-    // đồng hồ đếm ngược của ván cờ và lượt đấu
+    // đồng hồ đếm ngược của người chơi
     private CountDownTimer matchTimer;
-    private CountDownTimer turnTimer;
     // Label để hiển thị thời gian
     private JLabel matchTimerLabel;
-    private JLabel turnTimerLabel;
     private Timer timer;
 
-    public CountDownTimerPanel(long matchTimer, long turnTimer) {
+    // construtor chỉ khởi tạo và thiết lập đồng hồ chứ chưa chạy
+    public CountDownTimerPanel(long matchTimer) {
         // khởi tạo biến
         // panel
         this.setLayout(new GridLayout());
-        this.setOpaque(false);
         this.setPreferredSize(guiUtils.CLOCK_FRAME_DIMENSION);
-        //this.setVisible(true);
-        
-        // label
-        this.matchTimerLabel = new JLabel("00:00", SwingConstants.CENTER);
-        //this.turnTimerLabel = new JLabel("00:00", SwingConstants.CENTER);
-        this.matchTimerLabel.setFont(guiUtils.CLOCK_FONT);
-        //this.turnTimerLabel.setFont(guiUtils.CLOCK_FONT);
-        
-        // thêm label vào panel
-        this.add(this.matchTimerLabel);
-        //this.add(this.turnTimerLabel);
+        this.setBackground(guiUtils.CLOCK_BG);
         
         // thiết lập đồng hồ
         this.matchTimer = new CountDownTimer();
-        //this.turnTimer = new CountDownTimer();
         
         // đặt thời gian
         this.matchTimer.setDuration(matchTimer);
-        //this.turnTimer.setDuration(turnTimer);
         
-        // chạy dồng hồ
-        this.matchTimer.start();
-        //this.turnTimer.start();
+        // label
+        this.matchTimerLabel = new JLabel(
+                this.matchTimer.getFormattedRemainingTime(), SwingConstants.CENTER);
+        this.matchTimerLabel.setFont(guiUtils.CLOCK_FONT);
+        
+        this.add(this.matchTimerLabel);
         
         // thiết lập timer
         setTimer();
-        
     }
     
-    
+    // thiết lập timer 
     private void setTimer() {
         this.timer = new Timer(200, e -> {
-            this.matchTimerLabel.setText(this.matchTimer.getFormattedRemainingTime());
-            //this.turnTimerLabel.setText(this.turnTimer.getFormattedRemainingTime());
+            // kiểm tra nếu đồng hồ đang chạy
+            if(this.matchTimer.isRunning()) {
+                // cập nhật đồng hồ
+                this.matchTimerLabel.setText(this.matchTimer.getFormattedRemainingTime());
+            }
+            // nếu đang ngừng thì ngưng hiển thị
+            else {
+                // tạm thời ngưng lambda lại
+                timer.stop();
+            }
         });
-        
+    }
+    
+    // phương thức để các lớp khác tương tác với đồng hồ
+    // bắt đầu chạy mới hoặc từ lức tạm dừng
+    public void startTimer() {
+        matchTimer.start();
         timer.start();
     }
+    
+    // tạm dừng
+    public void pauseTimer() {
+        matchTimer.stop();;
+        timer.stop();
+    }
+    
+    // làm mới đồng hồ
+    public void resetTimer() {
+        matchTimer.reset();
+        matchTimerLabel.setText(matchTimer.getFormattedRemainingTime());
+        timer.stop();
+    }
+    
+    
     
 }

@@ -24,23 +24,29 @@ public class guiUtils {
             new Dimension(USER_FRAME_WIDTH, USER_FRAME_HEIGHT);
     
     // KHUNG CÁC TÍNH NĂNG NHƯ CHAT, THỜI GIAN, XIN HÒA, NƯỚC ĐI, ...
-    public static final int FEATURE_FRAME_HEIGHT = 662;
-    public static final int FEATURE_FRAME_WIDTH = 352;
-    public static final Dimension FEATURE_FRAME_DIMENSION = 
-            new Dimension(FEATURE_FRAME_WIDTH, FEATURE_FRAME_HEIGHT);
+    public static final int MATCH_INFO_FRAME_HEIGHT = 662;
+    public static final int MATCH_INFO_FRAME_WIDTH = 352;
+    public static final Dimension MATCHINFO_FRAME_DIMENSION = 
+            new Dimension(MATCH_INFO_FRAME_WIDTH, MATCH_INFO_FRAME_HEIGHT);
     
-    // CÁC KHOẢNG TRẮNG GIỮA KHUNG TÊN NGƯỜI DÙNG VÀ KHUNG THÔNG TIN
+    // CÁC KHOẢNG TRẮNG GIỮA KHUNG TÊN NGƯỜI DÙNG VÀ KHUNG SIDEBAR
     public static final int USER_BOARD_GAP = 27;
-    public static final int BOARD_FEATURE_GAP = 20;
+    public static final int BOARD_SIDEBAR_GAP = 20;
     
     // KHUNG ĐỒNG HỒ ĐẾM GIỜ(TẠM THỜI)
-    public static final int CLOCK_FRAME_HEIGHT = 44;
-    public static final int CLOCK_FRAME_WIDTH = FEATURE_FRAME_WIDTH;
+    public static final int CLOCK_FRAME_HEIGHT = USER_FRAME_HEIGHT;
+    public static final int CLOCK_FRAME_WIDTH = 177;
     public static final Dimension CLOCK_FRAME_DIMENSION = 
             new Dimension(CLOCK_FRAME_WIDTH, CLOCK_FRAME_HEIGHT);
     
     // phông chữ đồng hồ
-    public static final Font CLOCK_FONT = new Font("Arial", Font.BOLD, 40);
+    public static final Font CLOCK_FONT = new Font("Arial", Font.BOLD, 30);
+    
+    // màu của khung chứa đồng hồ
+    public static final Color CLOCK_BG = new Color(240, 240, 240);
+    
+    // khung chứa 2 nút đầu hàng và hòa
+    public static final Dimension BUTTON_FRAME_DIMENSION = new Dimension(352, 97);
     
     // TILE PANEL
     public static final int TILE_SIZE = 66; 
@@ -58,5 +64,9 @@ public class guiUtils {
     // thời lượng mỗi lượt trong ván đấu, 30s
     public static final long TURN_DURATION = 30 * 1000;
     
-    public static final Color MATCH_BG = Color.decode("#2c2b29");
+    // màu background giống chess.com
+    public static final Color MATCH_BG = new Color(49, 46, 43);
+    
+    // hai nút đầu hàng và hòa
+    public static final Font MATCH_BUTTON_FONT = new Font("Segoe UI", Font.BOLD, 13);
 }

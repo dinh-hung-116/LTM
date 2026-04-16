@@ -3,6 +3,8 @@ package chess.gui;
 import chess.gui.match.MatchPanel;
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameFrame {
 
@@ -28,7 +30,8 @@ public class GameFrame {
     public static void main(String[] args) {
             
         SwingUtilities.invokeLater(() -> {
-            new GameFrame();
+            GameFrame gf = new GameFrame();
+
         });
         
     }

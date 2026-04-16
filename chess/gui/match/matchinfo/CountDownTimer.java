@@ -23,6 +23,9 @@ public class CountDownTimer {
     }
 
     // Pause
+    // stop wor đây là tạm dừng đồng hồ. Mỗi khi gọi start thì đồng hồ sẽ 
+    // chạy tiếp mà không ảnh hưởng tới thời gian đã lưu là elapsedTime
+    
     public void stop() {
         if (running) {
             elapsedTime += System.currentTimeMillis() - startTime;
@@ -53,7 +56,7 @@ public class CountDownTimer {
             timePassed += System.currentTimeMillis() - startTime;
         }
         
-        // do đồng hồ chỉ thực sự dừng khi stop() được gọi nên có dòng này để 
+        // do đồng hồ chỉ thực sự tạm dừng khi stop() được gọi nên có dòng này để 
         // nếu thời gian đã chạy hết duration thì sẽ vẫn chỉ in 00:00 chú không có số âm như 00:-1
         long remaining = duration - timePassed;
         return Math.max(0, remaining); // avoid negative
@@ -87,6 +90,8 @@ public class CountDownTimer {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    // hàm để kiểm tra xem đồng hồ có chạy không
+    // nếu false thì có khả năng đang tạm dừng hoặc đã dừng hẳn
     public boolean isRunning() {
         return running;
     }

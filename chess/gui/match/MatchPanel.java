@@ -6,24 +6,29 @@ import chess.gui.match.chessboard.BlackBoardPanel;
 import chess.gui.match.chessboard.BoardPanel;
 import chess.gui.guiUtils;
 import javax.swing.JPanel;
-import chess.gui.match.matchinfo.UserInfoPanel;
-import chess.gui.match.matchinfo.MatchInfo;
+import chess.gui.match.matchinfo.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // lớp này sẽ là một JPanel và dùng gridbaglayout
 public class MatchPanel extends JPanel {
     // bàn cờ
     private BoardPanel boardPanel;
     
-    // ô tính năng
-    private MatchInfo featurePanel;
+    // ô tính năng bên phải
+    private SideBar sideBar;
+    
+    // hai ô thông tin người chơi
+    private PlayerInfoPanel whiteInfo;
+    private PlayerInfoPanel blackInfo;
     
     // dùng để điều chỉnh layout
     private GridBagConstraints gbc;
     
-    // 2 khung tên người dùng sẽ được chỉnh "cứng"
+    // 2 khung tên người dùng sẽ tạm thời được chỉnh "cứng"
 
     public MatchPanel() {
         super.setSize(guiUtils.OUTER_FRAME_DIMENSION);
@@ -32,7 +37,10 @@ public class MatchPanel extends JPanel {
         // khởi tạo thành phần
         this.boardPanel = new BlackBoardPanel();
         
-        this.featurePanel = new MatchInfo();
+        this.sideBar = new SideBar();
+        
+        this.whiteInfo = new PlayerInfoPanel("UserA");
+        this.blackInfo = new PlayerInfoPanel("UserB");
         
         this.gbc = new GridBagConstraints();
         
@@ -40,6 +48,9 @@ public class MatchPanel extends JPanel {
         
         // add components
         initMatchPanel();
+        
+        // thử cho đồng hồ bên b chạy
+        this.blackInfo.startClock();
         
     }
     
@@ -49,8 +60,8 @@ public class MatchPanel extends JPanel {
     // [C] [B]
     // [D] [B]
     
-    //Insets(top, left, bottom, right)
-    
+    // Insets(top, left, bottom, right)
+    // thêm thành phần vào panel
     public void initMatchPanel() {
         //---LEFT COLUMN--
         // A(x;y) = (0;0)
@@ -58,20 +69,25 @@ public class MatchPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         
+        gbc.weighty = 0.2;
+        
         gbc.fill = GridBagConstraints.BOTH;
         
-        gbc.insets = new Insets(10, 5, 10, 10);
+        gbc.insets = new Insets(10, 5, 5, 10);
         
-        this.add(new UserInfoPanel("UserA"), gbc);
+        // tạm thời cho userA và B vào đây
+        this.add(this.whiteInfo, gbc);
         
         // C(0;1)
         // BoardPanel
         gbc.gridx = 0;
         gbc.gridy = 1;
         
+        //gbc.weighty = 0.8;
+        
         gbc.fill = GridBagConstraints.BOTH;
         
-        gbc.insets = new Insets(10, 5, 10, 10);
+        gbc.insets = new Insets(5, 5, 5, 10);
         
         this.add(this.boardPanel, gbc);
         
@@ -80,11 +96,13 @@ public class MatchPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 2;
         
+        gbc.weighty = 0.2;
+        
         gbc.fill = GridBagConstraints.BOTH;
         
-        gbc.insets = new Insets(10, 5, 10, 10);
+        gbc.insets = new Insets(5, 5, 10, 10);
         
-        this.add(new UserInfoPanel("UserB"), gbc);
+        this.add(this.blackInfo, gbc);
         
         //--RIGHT COLUMN--
         // B(1;0)
@@ -97,8 +115,9 @@ public class MatchPanel extends JPanel {
         
         gbc.insets = new Insets(10, 10, 10, 10);
         
-        this.add(this.featurePanel, gbc);
+        this.add(this.sideBar, gbc);
     }
     
+    // có thể sẽ có phương thức để khởi động ván đấu
     
 }
