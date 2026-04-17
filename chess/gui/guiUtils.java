@@ -1,4 +1,4 @@
-package com.chess.gui;
+package chess.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;

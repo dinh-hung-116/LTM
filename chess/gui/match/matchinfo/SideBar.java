@@ -1,18 +1,22 @@
-package com.chess.gui.match.matchinfo;
+package chess.gui.match.matchinfo;
 
 
-import com.chess.gui.guiUtils;
+import chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 
 //package chess.gui.match.matchinfo;
@@ -40,7 +44,9 @@ public class SideBar extends JPanel {
     // nút đầu hàng và xin hòa
     private JButton resignBtn;
     private JButton drawBtn;
-    // panel chat
+    private JTextArea chatArea;
+    private JTextField chatInput;
+    private JButton sendBtn;
     // panel userinfo
     
     // gbc
@@ -49,13 +55,105 @@ public class SideBar extends JPanel {
     public SideBar() {
         this.setPreferredSize(guiUtils.MATCHINFO_FRAME_DIMENSION);
         this.setLayout(new GridBagLayout());
-        this.setBackground(Color.gray);
+        this.setBackground(new Color(38, 36, 33));
         this.setVisible(true);
         
         this.gbc = new GridBagConstraints();
+        this.gbc.insets = new java.awt.Insets(5, 5, 5, 5); // padding giữa các phần
         
         // nút
+        initChat();
         initButton();
+    }
+
+    private void initChat() {
+        // --- Khu vực hiển thị tin nhắn ---
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setLineWrap(true);
+        chatArea.setWrapStyleWord(true);
+        chatArea.setBackground(new Color(49, 46, 43));
+        chatArea.setForeground(Color.WHITE);
+        chatArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        JScrollPane chatScroll = new JScrollPane(chatArea);
+        chatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        chatScroll.setBorder(BorderFactory.createLineBorder(new Color(60, 63, 65)));
+        
+        // --- Khu vực chat nhanh
+        JPanel quickChatPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        quickChatPanel.setOpaque(false);
+        quickChatPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        
+        String[] quickMessages = {"👋 Chào!", "👍 Hay!", "😅 Áp lực!", "🤝 Cảm ơn!"};
+        for (String msg : quickMessages) {
+            JButton quickBtn = new JButton(msg);
+            quickBtn.setBackground(new Color(60, 63, 65));
+            quickBtn.setForeground(Color.WHITE);
+            quickBtn.setFocusPainted(false);
+            quickBtn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY),
+                    BorderFactory.createEmptyBorder(3, 5, 3, 5)));
+            quickChatPanel.add(quickBtn);
+            
+            quickBtn.addActionListener(e -> {
+                chatInput.setText(msg);
+                onSendMessage();
+            });
+        }
+        // --- Khu vực nhập tin nhắn ---
+        JPanel inputPanel = new JPanel(new BorderLayout(5, 0));
+        inputPanel.setOpaque(false);
+        
+        chatInput = new JTextField();
+        chatInput.setBackground(new Color(60, 63, 65));
+        chatInput.setForeground(Color.WHITE);
+        chatInput.setCaretColor(Color.WHITE);
+        chatInput.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        
+        sendBtn = new JButton("Gửi");
+        sendBtn.setBackground(new Color(118, 150, 86)); 
+        sendBtn.setForeground(Color.WHITE);
+        sendBtn.setFocusPainted(false);
+        sendBtn.setBorderPainted(false);
+        
+        inputPanel.add(chatInput, BorderLayout.CENTER);
+        inputPanel.add(sendBtn, BorderLayout.EAST);
+        
+        // --- Lắng nghe sự kiện gửi tin nhắn ---
+        sendBtn.addActionListener(e -> onSendMessage());
+        chatInput.addActionListener(e -> onSendMessage());
+            
+        
+        
+        // --- Thêm vào SideBar ---
+        // Thêm khung hiển thị chat
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0; 
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(0, 5, 5, 5);
+        this.add(chatScroll, gbc);
+
+        // Thêm khung chat nhanh
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        this.add(quickChatPanel, gbc);
+
+        
+        // Thêm khung nhập liệu chat
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0; 
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        this.add(inputPanel, gbc);
     }
     
     private void initButton() {
@@ -94,6 +192,21 @@ public class SideBar extends JPanel {
     }
     
     // hành động khi nút được nhấn
+    
+    private void onSendMessage() {
+        String message = chatInput.getText().trim();
+        if (!message.isEmpty()) {
+            // Thêm tin nhắn vào khung chat
+            chatArea.append("Bạn: " + message + "\n");
+            // Cuộn xuống cuối cùng
+            chatArea.setCaretPosition(chatArea.getDocument().getLength());
+            // Xóa nội dung ô nhập
+            chatInput.setText("");
+            
+            // TODO: Gửi tin nhắn qua Network/Socket tại đây
+        }
+    }
+
     private void onResign() {
         System.out.println("Resign button clicked");
     }

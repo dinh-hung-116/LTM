@@ -1,7 +1,7 @@
-package com.chess.database.DAO;
+package chess.database.DAO;
 
-import com.chess.database.Class.ChessMatch;
-import com.chess.database.Utils.DateTimeUtil;
+import chess.database.Class.ChessMatch;
+import chess.database.Utils.DateTimeUtil;
 
 import java.sql.*;
 import java.time.LocalDateTime;
