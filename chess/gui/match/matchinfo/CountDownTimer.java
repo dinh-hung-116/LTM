@@ -1,4 +1,4 @@
-package com.chess.gui.match.matchinfo;
+package chess.gui.match.matchinfo;
 //package chess.gui.match.matchinfo;
 
 // lớp dùng đồng hồ của hệ thống để chạy giờ

@@ -1,7 +1,7 @@
-package com.chess.gui.match.chessboard;
+package chess.gui.match.chessboard;
 
 
-import com.chess.gui.guiUtils;
+import chess.gui.guiUtils;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import java.awt.Color;

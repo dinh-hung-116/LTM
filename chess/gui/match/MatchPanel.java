@@ -1,14 +1,14 @@
-package com.chess.gui.match;
+package chess.gui.match;
 
 // Lớp này chứa bàn cờ, khung tên người dùng và ô tính năng
 
-import com.chess.gui.match.chessboard.BlackBoardPanel;
-import com.chess.gui.match.chessboard.BoardPanel;
-import com.chess.gui.guiUtils;
+import chess.gui.match.chessboard.BlackBoardPanel;
+import chess.gui.match.chessboard.BoardPanel;
+import chess.gui.guiUtils;
 import javax.swing.JPanel;
 
-import com.chess.gui.match.chessboard.LocalBoardPanel;
-import com.chess.gui.match.matchinfo.*;
+import chess.gui.match.chessboard.LocalBoardPanel;
+import chess.gui.match.matchinfo.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
