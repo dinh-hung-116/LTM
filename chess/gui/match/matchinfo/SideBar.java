@@ -1,18 +1,34 @@
-package chess.gui.match.matchinfo;
+package com.chess.gui.match.matchinfo;
 
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+
+//package chess.gui.match.matchinfo;
+//
+//
+//import chess.gui.guiUtils;
+//import java.awt.BorderLayout;
+//import java.awt.Color;
+//import java.awt.GridBagConstraints;
+//import java.awt.GridBagLayout;
+//import java.awt.GridLayout;
+//import java.awt.Image;
+//import javax.swing.BorderFactory;
+//import javax.swing.ImageIcon;
+//import javax.swing.JButton;
+//import javax.swing.JPanel;
 
 
 // lớp này chứa các nước đi đã thực hiện, chat, nút đầu hàng + xin hòa
@@ -52,8 +68,8 @@ public class SideBar extends JPanel {
         
         // ===== Icons =====
         int size = 40;
-        resignBtn.setIcon(loadIcon("/chess/gui/resources/flag.png", size, size));
-        drawBtn.setIcon(loadIcon("/chess/gui/resources/handshake.png", size, size));
+        resignBtn.setIcon(loadIcon("/com/chess/gui/resources/flag.png", size, size));
+        drawBtn.setIcon(loadIcon("/com/chess/gui/resources/handshake.png", size, size));
         
         // tạo một panel dùng gridlayout để đưa 2 nút vào
         JPanel btnPanel = new JPanel();
@@ -108,12 +124,25 @@ public class SideBar extends JPanel {
     }
     
     // ================= LOAD ICON =================
+//    private ImageIcon loadIcon(String path, int w, int h) {
+//        ImageIcon icon = new ImageIcon(getClass().getResource(path));
+//        Image img = icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+//        return new ImageIcon(img);
+//    }
+
+
     private ImageIcon loadIcon(String path, int w, int h) {
-        ImageIcon icon = new ImageIcon(getClass().getResource(path));
+        URL url = getClass().getResource(path);
+
+        if (url == null) {
+            System.out.println("❌ Không tìm thấy ảnh: " + path);
+            return null;
+        }
+
+        ImageIcon icon = new ImageIcon(url);
         Image img = icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
-    
 }
 
 /*

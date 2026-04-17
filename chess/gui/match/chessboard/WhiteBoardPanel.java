@@ -1,7 +1,7 @@
-package chess.gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
 
-import gui.match.chessboard.Assets;
+import com.chess.gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
@@ -11,6 +11,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+
+//package chess.gui.match.chessboard;
+//
+//
+//import gui.match.chessboard.Assets;
+//import io.github.wolfraam.chessgame.ChessGame;
+//import io.github.wolfraam.chessgame.board.Side;
+//import io.github.wolfraam.chessgame.board.Square;
+//import io.github.wolfraam.chessgame.move.Move;
+//import java.util.ArrayList;
+//import java.util.Collection;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.Scanner;
+
 
 // BÊN TRẮNG SẼ MẶC ĐỊNH THEO SERVER
 public class WhiteBoardPanel extends BoardPanel {

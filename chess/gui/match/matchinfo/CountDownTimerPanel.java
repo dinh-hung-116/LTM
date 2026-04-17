@@ -1,7 +1,7 @@
-package chess.gui.match.matchinfo;
+package com.chess.gui.match.matchinfo;
 
-import chess.gui.match.matchinfo.CountDownTimer;
-import chess.gui.guiUtils;
+import com.chess.gui.match.matchinfo.CountDownTimer;
+import com.chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,6 +12,20 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+//
+//package chess.gui.match.matchinfo;
+//
+//import chess.gui.match.matchinfo.CountDownTimer;
+//import chess.gui.guiUtils;
+//import java.awt.BorderLayout;
+//import java.awt.Color;
+//import java.awt.Font;
+//import java.awt.GridLayout;
+//import javax.swing.JFrame;
+//import javax.swing.JLabel;
+//import javax.swing.JPanel;
+//import javax.swing.SwingConstants;
+//import javax.swing.Timer;
 /*
 * Tạm thời chỉ dùng matchTimer
 */

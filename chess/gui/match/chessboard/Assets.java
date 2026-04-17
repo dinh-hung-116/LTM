@@ -1,8 +1,13 @@
-package gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import javax.imageio.ImageIO;
 
+//package gui.match.chessboard;
+//
+//import java.awt.image.BufferedImage;
+//import javax.imageio.ImageIO;
 /*
 - Lớp này dùng để khởi tạo và lưu trữ ảnh cho GUI
 */
@@ -52,9 +57,18 @@ public class Assets {
     }
 
     // 🔥 helper method (cleaner)
-    private BufferedImage loadImage(String fileName) throws Exception {
-        return ImageIO.read(
-            Assets.class.getResource("/chess/gui/resources/" + fileName)
-        );
+//    private BufferedImage loadImage(String fileName) throws Exception {
+//        return ImageIO.read(
+//            Assets.class.getResource("com/chess/gui/resources/" + fileName)
+//        );
+//    }
+
+    private BufferedImage loadImage(String fileName) {
+        try {
+            return ImageIO.read(new File("chess/gui/resources/" + fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

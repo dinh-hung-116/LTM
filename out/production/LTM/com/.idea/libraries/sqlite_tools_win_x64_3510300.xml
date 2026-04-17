@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sqlite-tools-win-x64-3510300">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/chess/external_lib/SQLite/sqlite-tools-win-x64-3510300.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

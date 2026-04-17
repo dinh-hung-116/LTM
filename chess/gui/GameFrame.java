@@ -1,10 +1,19 @@
-package chess.gui;
+package com.chess.gui;
 
-import chess.gui.match.MatchPanel;
+import com.chess.gui.match.MatchPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//package chess.gui;
+//
+//import chess.gui.match.MatchPanel;
+//import javax.swing.*;
+//import java.awt.*;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+
 
 public class GameFrame {
 

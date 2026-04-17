@@ -1,10 +1,14 @@
-package chess.gui;
+package com.chess.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
-
+//package chess.gui;
+//
+//import java.awt.Color;
+//import java.awt.Dimension;
+//import java.awt.Font;
 
 public class guiUtils {
     // FRAME GAME - KHUNG GAME

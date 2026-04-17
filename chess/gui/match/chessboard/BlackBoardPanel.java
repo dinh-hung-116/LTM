@@ -1,10 +1,18 @@
-package chess.gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
-import gui.match.chessboard.Assets;
+import com.chess.gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
 import java.util.HashSet;
+
+//package chess.gui.match.chessboard;
+//
+//import gui.match.chessboard.Assets;
+//import io.github.wolfraam.chessgame.board.Side;
+//import io.github.wolfraam.chessgame.board.Square;
+//import io.github.wolfraam.chessgame.move.Move;
+//import java.util.HashSet;
 
 // BÊN ĐEN (bàn cờ bị lật)
 public class BlackBoardPanel extends BoardPanel {

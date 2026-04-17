@@ -1,7 +1,7 @@
-package chess.gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import java.awt.Color;
@@ -13,6 +13,22 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+//package chess.gui.match.chessboard;
+//
+//
+//import chess.gui.guiUtils;
+//import io.github.wolfraam.chessgame.board.Side;
+//import io.github.wolfraam.chessgame.board.Square;
+//import java.awt.Color;
+//import java.awt.Graphics;
+//import java.awt.GridLayout;
+//import java.awt.LayoutManager;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
+//import java.awt.image.BufferedImage;
+//import javax.swing.JPanel;
+//import javax.swing.SwingUtilities;
 
 /*
 - TilePanel sẽ kế thừa lớp JPanel để hiển thị ô + quân cờ và xử lý click chuột

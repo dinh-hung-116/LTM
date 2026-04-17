@@ -1,9 +1,16 @@
-package chess.gui.match.matchinfo;
+package com.chess.gui.match.matchinfo;
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import java.awt.*;
+import java.net.URL;
 import javax.swing.*;
 
+//
+//package chess.gui.match.matchinfo;
+//
+//import chess.gui.guiUtils;
+//import java.awt.*;
+//import javax.swing.*;
 public class PlayerInfoPanel extends JPanel {
 
     private CountDownTimerPanel clock;
@@ -26,7 +33,7 @@ public class PlayerInfoPanel extends JPanel {
         playerInfoPanel.setOpaque(false); // inherit background
 
         // Avatar
-        avatarLabel = new JLabel(loadAvatar("/chess/gui/resources/user-image.png"));
+        avatarLabel = new JLabel(loadAvatar("/com/chess/gui/resources/user-image.png"));
 
         // Player name
         playerInfo = new JLabel(name);
@@ -69,10 +76,23 @@ public class PlayerInfoPanel extends JPanel {
 
     // phương thức lấy ảnh avatar của người chơi
     // Helper method to load & scale avatar
+//    private ImageIcon loadAvatar(String path) {
+//        ImageIcon icon = new ImageIcon(
+//            getClass().getResource(path)
+//        );
+//        Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+//        return new ImageIcon(img);
+//    }
+
     private ImageIcon loadAvatar(String path) {
-        ImageIcon icon = new ImageIcon(
-            getClass().getResource(path)
-        );
+        URL url = getClass().getResource(path);
+
+        if (url == null) {
+            System.out.println("❌ Không tìm thấy ảnh: " + path);
+            return null;
+        }
+
+        ImageIcon icon = new ImageIcon(url);
         Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }

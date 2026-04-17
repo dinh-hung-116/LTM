@@ -1,8 +1,8 @@
-package chess.gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
 
-import chess.gui.guiUtils;
-import gui.match.chessboard.Assets;
+import com.chess.gui.guiUtils;
+import com.chess.gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
@@ -13,7 +13,20 @@ import java.util.HashSet;
 import java.util.List;
 import javax.swing.JPanel;
 
-
+//package chess.gui.match.chessboard;
+//
+//
+//import chess.gui.guiUtils;
+//import gui.match.chessboard.Assets;
+//import io.github.wolfraam.chessgame.ChessGame;
+//import io.github.wolfraam.chessgame.board.Square;
+//import io.github.wolfraam.chessgame.move.Move;
+//import java.awt.Color;
+//import java.awt.GridLayout;
+//import java.util.ArrayList;
+//import java.util.HashSet;
+//import java.util.List;
+//import javax.swing.JPanel;
 
 /*
 - Cấu trúc mảng của engine:
