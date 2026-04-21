@@ -76,40 +76,40 @@ public class WhiteBoardPanel extends BoardPanel {
                 // Lấy ra TilePanel tại index cho dễ thao tác
                 TilePanel indexTile = this.boardTiles[index];
                 
-                // nếu ô đó không trống và là quân của mình và sourceTile = null
-                if(!indexTile.isEmpty() && indexTile.getSide() == Side.WHITE &&this.sourceTile == null) {
-                    // lưu tọa độ vào sourceTile
-                    this.sourceTile = index;
+                // nếu ô đó không trống và là quân của mình và srcIndex = null
+                if(!indexTile.isEmpty() && indexTile.getSide() == Side.WHITE &&this.srcIndex == null) {
+                    // lưu tọa độ vào srcIndex
+                    this.srcIndex = index;
                     
                     // in ra index và side để kiểm tra
-                    System.out.println("My index is: " + sourceTile + ":" + index +
+                    System.out.println("My index is: " + srcIndex + ":" + index +
                             ", and my side is: " + indexTile.getSide().toString());
                 
                     // highlight ô và ô là nước đi hợp lệ
                     this.highlightTileNMove(index);
                     
                 }
-                // nếu sourceTile đã được gán -> kiểm tra và thực hiện di chuyển
-                else if(this.sourceTile != null) {
-                    // lấy ra TilePanel tại sourceTile
-                    TilePanel srcTile = this.boardTiles[sourceTile];
+                // nếu srcIndex đã được gán -> kiểm tra và thực hiện di chuyển
+                else if(this.srcIndex != null) {
+                    // lấy ra TilePanel tại srcIndex
+                    TilePanel srcTile = this.boardTiles[srcIndex];
                     
                     // lấy ra mảng nước đi hợp lệ để nếu nước đi đúng thì sẽ dùng để tắt highlight
                     HashSet<Move> move = 
-                            (HashSet) this.chessGame.getLegalMoves(this.fromTilePanelToSquare(sourceTile));
+                            (HashSet) this.chessGame.getLegalMoves(this.fromTilePanelToSquare(srcIndex));
                     
-                    System.out.println("Source: " + sourceTile + ":" + index);
+                    System.out.println("Source: " + srcIndex + ":" + index);
                     /*
-                    // nếu sourceTile != null và sourceTile trùng với index -> hủy tương tác với ô
-                    if(sourceTile.equals(index)) {
+                    // nếu srcIndex != null và srcIndex trùng với index -> hủy tương tác với ô
+                    if(srcIndex.equals(index)) {
                         // xóa highlight ô và các ô là nước đi hợp lệ
-                        this.clearHighlightTileNMove(sourceTile);
+                        this.clearHighlightTileNMove(srcIndex);
                         // gán lại source Tile
-                        this.sourceTile = null;
+                        this.srcIndex = null;
                     }
                     */
                     // kiểm tra xem nước đi có hợp lệ và đã được thực thi thì cập nhật lại Tile
-                    if(this.isLegalMove(this.sourceTile, index)) {
+                    if(this.isLegalMove(this.srcIndex, index)) {
                         
                         // cập nhật ảnh và side cho ô cờ mới 
                         // lấy ảnh và Side của ô cờ cũ và cập nhật cho ô mới
@@ -121,9 +121,9 @@ public class WhiteBoardPanel extends BoardPanel {
                         srcTile.clear();
                         
                         // xóa highlight của ô cờ cũ và các ô nước đi hợp lệ
-                        this.clearTileHighlight(sourceTile);
+                        this.clearTileHighlight(srcIndex);
                         // cái này dùng phương thức có input (int, HashSet) do trong engine thì quân cờ tại sourceTle đã di 
-                        // chuyển và không còn tồn tại ở đó nên nếu truyền sourceTile thì mảng trả về sẽ trống
+                        // chuyển và không còn tồn tại ở đó nên nếu truyền srcIndex thì mảng trả về sẽ trống
                         this.clearLegalMovesHighlight(move);
                         
                         // tắt highlight tại ô index do phương thức highlight vẫn chạy khi bấm ô index
@@ -136,20 +136,20 @@ public class WhiteBoardPanel extends BoardPanel {
                         
                         //==========
                         
-                        // gán lại sourceTile
-                        this.sourceTile = null;
+                        // gán lại srcIndex
+                        this.srcIndex = null;
                     }
-                    // nếu sai thì báo nước đi không hợp lệ và gán lại sourceTile kèm tắt highlight
+                    // nếu sai thì báo nước đi không hợp lệ và gán lại srcIndex kèm tắt highlight
                     // điều kiện này cũng bao gồm vieejc ô có quân cờ được bấm 2 lần liên tiếp
                     else {
                         System.out.println(
                                 "<" + this.chessGame.getSideToMove().toString() + 
                                 "> has made illegal move or a piece has been clicked twice!\n" + 
-                                "<SOURCE:INDEX> = " + "<" + sourceTile + ":" + index + ">");
+                                "<SOURCE:INDEX> = " + "<" + srcIndex + ":" + index + ">");
                         
-                        this.clearHighlightTileNMove(sourceTile);
+                        this.clearHighlightTileNMove(srcIndex);
                         
-                        this.sourceTile = null;
+                        this.srcIndex = null;
                     }
                 }
             }

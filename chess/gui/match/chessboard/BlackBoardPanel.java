@@ -114,9 +114,9 @@ public class BlackBoardPanel extends BoardPanel {
             TilePanel indexTile = this.boardTiles[index];
 
             // chọn quân
-            if (!indexTile.isEmpty() && indexTile.getSide() == Side.BLACK && this.sourceTile == null) {
+            if (!indexTile.isEmpty() && indexTile.getSide() == Side.BLACK && this.srcIndex == null) {
 
-                this.sourceTile = index;
+                this.srcIndex = index;
 
                 System.out.println("BLACK pick: " + index);
 
@@ -128,19 +128,19 @@ public class BlackBoardPanel extends BoardPanel {
             }
 
             // thực hiện nước đi
-            else if (this.sourceTile != null) {
+            else if (this.srcIndex != null) {
 
-                TilePanel srcTile = this.boardTiles[sourceTile];
+                TilePanel srcTile = this.boardTiles[srcIndex];
 
                 // lấy legal move từ engine (phải flip source)
                 HashSet<Move> move =
                         (HashSet) this.chessGame.getLegalMoves(
-                                this.fromTilePanelToSquare(flipIndex(sourceTile)));
+                                this.fromTilePanelToSquare(flipIndex(srcIndex)));
 
-                System.out.println("BLACK move: " + sourceTile + " -> " + index);
+                System.out.println("BLACK move: " + srcIndex + " -> " + index);
 
                 // kiểm tra nước đi (phải flip cả source và target)
-                if (this.isLegalMove(flipIndex(sourceTile), flipIndex(index))) {
+                if (this.isLegalMove(flipIndex(srcIndex), flipIndex(index))) {
 
                     // update UI (KHÔNG flip ở đây vì đang dùng UI index)
                     indexTile.setPieceImage(
@@ -150,7 +150,7 @@ public class BlackBoardPanel extends BoardPanel {
                     srcTile.clear();
 
                     // clear highlight
-                    this.clearTileHighlight(sourceTile);
+                    this.clearTileHighlight(srcIndex);
                     this.clearLegalMovesHighlight(move);
                     this.clearTileHighlight(index);
                     
@@ -160,16 +160,16 @@ public class BlackBoardPanel extends BoardPanel {
                     // to do: y như bên trắng
                     
                     //==========
-                    this.sourceTile = null;
+                    this.srcIndex = null;
                     
                 } else {
 
                     System.out.println("Illegal move (BLACK)");
 
                     // tắt highlight
-                    this.clearTileHighlight(this.sourceTile);
-                    this.clearLegalMovesHighlight(this.sourceTile);
-                    this.sourceTile = null;
+                    this.clearTileHighlight(this.srcIndex);
+                    this.clearLegalMovesHighlight(this.srcIndex);
+                    this.srcIndex = null;
                 }
             }
         }

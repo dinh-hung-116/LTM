@@ -55,8 +55,8 @@ public abstract class BoardPanel extends JPanel{
     // dùng mảng tĩnh do luôn có 64 ô cờ
     protected TilePanel[] boardTiles;
     
-    // biến này để lưu vị trí hiện tại dùng trong quá trình di chuyển quân cờ
-    protected Integer sourceTile;
+    // biến này để lưu ô hiện tại dùng trong quá trình di chuyển quân cờ
+    protected TilePanel sourceTile;
     
     // Assets
     protected Assets image;
@@ -247,17 +247,17 @@ public abstract class BoardPanel extends JPanel{
         
         // cập nhật gui
         // lấy Tile
-        TilePanel srcTile = this.boardTiles[source];
-        TilePanel destTile = this.boardTiles[dest];
+        TilePanel srcTile = this.getTilePanelWithIndex(source);
+        TilePanel destTile = this.getTilePanelWithIndex(dest);
         
         destTile.setPieceImage(srcTile.getPieceImage(), srcTile.getSide());
         // Xóa ô nguồn
                 
         srcTile.clear();
         this.clearAllHighlighted();
-
+        System.out.println("source: " + srcTile.getIndex() + "\ndest: " + destTile.getIndex());
                 
-        // Reset sourceTile → lượt tiếp theo tự động là bên kia (engine tự chuyển)
+        // Reset srcIndex → lượt tiếp theo tự động là bên kia (engine tự chuyển)
         this.sourceTile = null;
         
         return move.toString();
@@ -310,24 +310,24 @@ public abstract class BoardPanel extends JPanel{
         
         // cập nhật gui
         // lấy Tile
-        TilePanel srcTile = this.boardTiles[source];
-        TilePanel destTile = this.boardTiles[dest];
+        TilePanel srcTile = this.getTilePanelWithIndex(source);
+        TilePanel destTile = this.getTilePanelWithIndex(dest);
         
         // xóa ô tại vị trí phía dưới index do quân chốt đã nhảy lên vị trí phía sau quân chốt bị ăn
         // hai trường hợp trắng và đen. trắng thì + 8, đen thì - 8
         int capturedPawn;
         if(currentSide == Side.WHITE) capturedPawn = dest + 8;           
-        else capturedPawn = dest + 8;            
+        else capturedPawn = dest - 8;            
                     
         destTile.setPieceImage(srcTile.getPieceImage(), srcTile.getSide());
         // Xóa ô nguồn
         srcTile.clear();
         this.clearAllHighlighted();
         
-        // xóa ô có quân bị ăn
-        this.boardTiles[capturedPawn].clear();
+        // xóa ô có quân chốt bị ăn
+        this.getTilePanelWithIndex(capturedPawn).clear();
                 
-        // Reset sourceTile → lượt tiếp theo tự động là bên kia (engine tự chuyển)
+        // Reset srcIndex → lượt tiếp theo tự động là bên kia (engine tự chuyển)
         this.sourceTile = null;
         
         return move.toString();
@@ -350,8 +350,8 @@ public abstract class BoardPanel extends JPanel{
         chessGame.playMove(move);
           
         // CẬP NHẬT GUI
-        TilePanel srcTile = this.boardTiles[source];
-        TilePanel destTile = this.boardTiles[dest];
+        TilePanel srcTile = this.getTilePanelWithIndex(source);
+        TilePanel destTile = this.getTilePanelWithIndex(dest);
         
         // lấy ra ảnh quân phong cấp để cập nhật gui
         BufferedImage destImage = getPromotedImage(promotion, srcTile.getSide());
@@ -369,7 +369,7 @@ public abstract class BoardPanel extends JPanel{
     // Kiểm tra nước đi có phải phong tốt không (tốt đến hàng cuối)
     // valid notation <from><to><piece>. Ex: a7a8Q
     public boolean isPromotionAttempt(int source, int dest) {
-        TilePanel srcTile = boardTiles[source];
+        TilePanel srcTile = this.getTilePanelWithIndex(source);
         // kiểm tra xem ô có quân cờ không
         if (srcTile.isEmpty()) {
             //System.out.println("isPromotionAttempt: Tile empty");
@@ -459,8 +459,8 @@ public abstract class BoardPanel extends JPanel{
         
         // cập nhật gui
         // lấy Tile
-        TilePanel srcTile = this.boardTiles[source];
-        TilePanel destTile = this.boardTiles[dest];
+        TilePanel srcTile = this.getTilePanelWithIndex(source);
+        TilePanel destTile = this.getTilePanelWithIndex(dest);
         
         // lấy ra Square tại index để kiểm tra            
         Square destSquare = this.fromTilePanelToSquare(destTile.getIndex());
@@ -490,8 +490,8 @@ public abstract class BoardPanel extends JPanel{
 
         // cập nhật hình ảnh quân xe
         // lấy ra Tile cũ và mới của quân xe
-        TilePanel rookNewTile = this.boardTiles[rookNewCoor];
-        TilePanel rookOldTile = this.boardTiles[rookOldCoor];
+        TilePanel rookNewTile = this.getTilePanelWithIndex(rookNewCoor);
+        TilePanel rookOldTile = this.getTilePanelWithIndex(rookOldCoor);
 
         rookNewTile.setPieceImage(rookOldTile.getPieceImage(), currentSide);
         rookOldTile.clear();
@@ -559,7 +559,7 @@ public abstract class BoardPanel extends JPanel{
     
     // Phương thức highlight 1 ô
     public void tileHighlight(int index) {
-        this.boardTiles[index].setHighlighted(true);
+        this.getTilePanelWithIndex(index).setHighlighted(true);
     }
     
     // Phương thức highlight các nước đi hợp lệ
@@ -569,9 +569,9 @@ public abstract class BoardPanel extends JPanel{
        HashSet<Move> move = 
                (HashSet<Move>) this.chessGame.getLegalMoves(this.fromTilePanelToSquare(index));
        
-       // di chuyển qua từng Move và bật highlight tại Square
+       // di chuyển qua từng Move và bật highlight tại TilePanel
        for(Move mv : move) {
-           this.boardTiles[this.fromSquareToIndex(mv.to)].setHighlighted(true);
+           this.getTilePanelWithIndex(this.fromSquareToIndex(mv.to)).setHighlighted(true);
        }
     }
     
@@ -587,7 +587,7 @@ public abstract class BoardPanel extends JPanel{
     //===== ABORT =====
     // phưởng thức hủy bỏ thao tác trên bàn cờ khi nhấn chuột phải
     protected void Abort() {
-        // gán lại sourceTile
+        // gán lại srcIndex
         this.sourceTile = null;
         
         // tắt highlight mọi ô
@@ -600,7 +600,7 @@ public abstract class BoardPanel extends JPanel{
     
     //===== HELPER =====
     // GUI -> ENGINE
-    // Phương thức để chuyển tọa độ mảng 1 chiều gui thành toạc độ bên engine
+    // Phương thức để chuyển tọa độ mảng 1 chiều gui thành toạ độ bên engine
     public int toRow(int index) {
         return index / 8;
     }
@@ -645,11 +645,11 @@ public abstract class BoardPanel extends JPanel{
     
     public void clickDebug(int dest, Side currentSide) {
         System.out.println("[" + currentSide + "] đi: "
-                + fromTilePanelToSquare(this.sourceTile)
+                + fromTilePanelToSquare(this.sourceTile.getIndex())
                 + " → " + fromTilePanelToSquare(dest));
         if (this.boardTiles[dest].getSide() != null) {
             // kiểm tra side của quân cờ
-            System.out.println("source[" + this.boardTiles[sourceTile].getSide().toString() + "] - dest["
+            System.out.println("source[" + this.boardTiles[this.sourceTile.getIndex()].getSide().toString() + "] - dest["
                     + this.boardTiles[dest].getSide().toString() + "]");
         }
     }
@@ -671,11 +671,28 @@ public abstract class BoardPanel extends JPanel{
             System.out.print(this.boardTiles[i].getIndex() + " ");
         }
     }
+    
+    // hàm này để lấy ra TilePanel với tham số index
+    public TilePanel getTilePanelWithIndex(int index) {
+        int flipValue;
+        // nếu bàn cờ không bị lật => flip = false
+        if(!this.flip) flipValue = 0;
+        else flipValue = 63;
+        return this.boardTiles[Math.abs(flipValue - index)];
+        /*
+        *Cách hoạt động:
+        *Bàn cờ trắng sẽ có index theo thức tự của mảng boardTiles
+        *Bàn cờ đen sẽ bị ngược lại do giá trị index được gán ngược với index của boardTiles
+        *Vd:
+        *Trắng: boardTiles[0].getIndex() = |0 - 0|
+        *Đen: boardTiles[0].getIndex() = |63 - 0| = 63
+        */
+    }
     //==================
     
     //===== ABSTRACT METHOD =====
     // hai bàn cờ con sẽ tự có handlerMovePiece
-    public abstract void handlerMovePiece(int tileID);
+    public abstract void handlerMovePiece(TilePanel tile);
 }
 //===============================
 

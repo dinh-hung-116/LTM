@@ -61,7 +61,7 @@ public class TilePanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 // chuột trái
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                   boardPanel.handlerMovePiece(index);
+                   boardPanel.handlerMovePiece(getTilePanel());
                 } 
                 // chuột phải
                 else {
@@ -73,6 +73,11 @@ public class TilePanel extends JPanel {
             }
         });
         
+    }
+    
+    // lấy chính object
+    public TilePanel getTilePanel() {
+        return this;
     }
     
     // Lấy index của ô cờ

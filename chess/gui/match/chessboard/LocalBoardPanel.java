@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 public class LocalBoardPanel extends BoardPanel {
 
     public LocalBoardPanel() {
-        super(false);
+        super(true);
         // Vẽ bàn cờ và đặt quân
         this.drawBoard();
         this.setPieceImage();
@@ -32,16 +32,18 @@ public class LocalBoardPanel extends BoardPanel {
     // XỬ LÝ NƯỚC ĐI
     // =====================
     @Override
-    public void handlerMovePiece(int index) {
+    public void handlerMovePiece(TilePanel indexTile) {
         // Lấy lượt hiện tại từ engine (WHITE hoặc BLACK)
         Side currentSide = this.chessGame.getSideToMove();
-        TilePanel indexTile = this.boardTiles[index];
+        //TilePanel indexTile = this.boardTiles[index];
+        // index của indexTile
+        int index = indexTile.getIndex();
 
-        // === BƯỚC 1: Chưa chọn quân nào (sourceTile == null) ===
+        // === BƯỚC 1: Chưa chọn quân nào (srcIndex == null) ===
         if (this.sourceTile == null) {
             // Chỉ chọn ô không trống và quân thuộc bên đang có lượt
             if (!indexTile.isEmpty() && indexTile.getSide() == currentSide) {
-                this.sourceTile = index;
+                this.sourceTile = indexTile;
 
                 System.out.println("[" + currentSide + "] chọn ô: " + index
                         + " (" + fromTilePanelToSquare(index) + ")");
@@ -52,20 +54,20 @@ public class LocalBoardPanel extends BoardPanel {
             // Nếu ô trống hoặc quân không phải lượt mình → bỏ qua
         }
 
-        // === BƯỚC 2: Đã chọn quân (sourceTile != null) ===
+        // === BƯỚC 2: Đã chọn quân (srcIndex != null) ===
         else {
-            TilePanel srcTile = this.boardTiles[this.sourceTile];
+            // lấy index srcIndex
+            int srcIndex = this.sourceTile.getIndex();
 
             // Lưu lại set nước đi hợp lệ trước khi engine cập nhật
             HashSet<Move> legalMoves =
                     (HashSet<Move>) this.chessGame.getLegalMoves(
-                            this.fromTilePanelToSquare(this.sourceTile));
+                            this.fromTilePanelToSquare(srcIndex));
 
             // --- TH: Bấm lại cùng ô → hủy chọn ---
-            if (this.sourceTile.equals(index)) {
+            if (srcIndex == index) {
                 System.out.println("[" + currentSide + "] hủy chọn ô: " + index);
-                this.clearTileHighlight(this.sourceTile);
-                this.clearLegalMovesHighlight(legalMoves);
+                this.clearAllHighlighted();
                 this.sourceTile = null;
                 return;
             }
@@ -73,11 +75,10 @@ public class LocalBoardPanel extends BoardPanel {
             // --- TH: Bấm quân cùng màu khác → chuyển sang quân đó ---
             if (!indexTile.isEmpty() && indexTile.getSide() == currentSide) {
                 // Tắt highlight quân cũ
-                this.clearTileHighlight(this.sourceTile);
-                this.clearLegalMovesHighlight(legalMoves);
+                this.clearAllHighlighted();
 
                 // Chọn quân mới
-                this.sourceTile = index;
+                this.sourceTile = indexTile;
                 this.highlightTileNMove(index);
 
                 System.out.println("[" + currentSide + "] đổi sang ô: " + index
@@ -93,40 +94,40 @@ public class LocalBoardPanel extends BoardPanel {
             String notation = "";
             boolean validMove = false;
             //===== PROMOTION =====
-            if(this.isPromotionAttempt(sourceTile, index)) {
+            if(this.isPromotionAttempt(srcIndex, index)) {
                 //System.out.println("promo");
                 // Hiển thị dialog chọn quân phong
                 PieceType choice = PromotionDialog.show(
                         SwingUtilities.getWindowAncestor(this), this.image, currentSide);
                 // thực hiện phong cấp trong engine
-                notation = this.playMoveWithPromotion(sourceTile, index, choice);
+                notation = this.playMoveWithPromotion(srcIndex, index, choice);
                 
                 validMove = true;
             }
             //=======================
             
             //===== TH còn lại =====
-            else if (this.isLegalMove(this.sourceTile, index)) {
+            else if (this.isLegalMove(srcIndex, index)) {
                 //===== EN PASSANT =====
-                if(this.isEnPassent(sourceTile, index)) {
+                if(this.isEnPassent(srcIndex, index)) {
                     // thực hiện di chuyển 
-                    notation = this.playMoveWithEnPassant(sourceTile, index, currentSide);
+                    notation = this.playMoveWithEnPassant(srcIndex, index, currentSide);
                     validMove = true;
                 }
                 //======================
                 
                 //===== CASTLING =====
-                else if(this.isCastlingAttempt(sourceTile, index, currentSide)) {
+                else if(this.isCastlingAttempt(srcIndex, index, currentSide)) {
                     System.out.println(currentSide.toString() + " attempted to castle ");
                     // thực hiện di chuyển
-                    notation = this.playMoveWithCastling(sourceTile, index, currentSide);
+                    notation = this.playMoveWithCastling(srcIndex, index, currentSide);
                     validMove = true;
                 }
                 //=======================
                 
                 //===== NƯỚC ĐI THƯỜNG =====
                 else {
-                    notation = this.playMove(sourceTile, index, currentSide);
+                    notation = this.playMove(srcIndex, index, currentSide);
                     validMove = true;
                 }
                 //===========================
