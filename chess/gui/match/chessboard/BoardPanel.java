@@ -64,6 +64,13 @@ public abstract class BoardPanel extends JPanel{
     // bàn cờ trong engine
     protected ChessGame chessGame;
     
+    // biến để kiểm tra xem bàn cờ có bị lật không, white = false, black = true
+    protected boolean flip;
+    
+    // chuỗi để lưu notation theo bên trắng, đen thì chạy ngược lại
+    protected final String[] files = {"a","b","c","d","e","f","g","h"};    
+    protected final String[] ranks = {"8","7","6","5","4","3","2","1"};
+    
     // interface để MatchPanel gọi khi cần
     public interface MoveListener {
         void onMoveMade(String notation);
@@ -73,7 +80,7 @@ public abstract class BoardPanel extends JPanel{
     protected MoveListener moveListener;
 
     
-    protected BoardPanel() {
+    protected BoardPanel(boolean flip) {
         // Tạo Panel có 8x8 ô
         this.setLayout(new GridLayout(8, 8));
         
@@ -93,6 +100,9 @@ public abstract class BoardPanel extends JPanel{
         // trong engine thì trắng mặc định đi trước
         this.chessGame = new ChessGame();
         
+        // flipIndex
+        this.flip = flip;
+       
     }
     
     //===== MOVE LISTENER =====
@@ -101,14 +111,15 @@ public abstract class BoardPanel extends JPanel{
     }
     //=========================
     
+    //===== THIẾT LẬP UI BÀN CỜ =====
     // vẽ ô cờ, ô cờ không thay đổi dù lật ngược
     // Vẽ màu và gán giá trị index cho ô cờ
     // tham số true = white, false = black
-    public void drawBoard(boolean check) {
+    public void drawBoard() {
         // biến để lật giá trị index trong TilePanel
-        int flip;
-        if(check) flip = 0;
-        else flip = 63;
+        int flipIndex;
+        if(!this.flip) flipIndex = 0;
+        else flipIndex = 63;
         
         for (int i = 0; i < this.boardTiles.length; i++) {
 
@@ -132,7 +143,7 @@ public abstract class BoardPanel extends JPanel{
                     : guiUtils.DARK_TILE;
             
             // tạo TilePanel
-            TilePanel tile = new TilePanel(Math.abs(flip - i), tileColor, this);
+            TilePanel tile = new TilePanel(Math.abs(flipIndex - i), tileColor, this);
             
             // gán vào mảng TilePanel
             this.boardTiles[i] = tile;
@@ -140,8 +151,66 @@ public abstract class BoardPanel extends JPanel{
             add(tile);
         }
     }
-    
-    //##############################################
+    public void setPieceImage() {
+        // bên trắng
+        if(!flip) {
+            // Hàng chốt
+            for (int i = 0; i < 8; i++) {
+                boardTiles[8 + i].setPieceImage(image.BP, Side.BLACK);   // chốt đen hàng 2 từ trên
+                boardTiles[48 + i].setPieceImage(image.WP, Side.WHITE);  // chốt trắng hàng 7
+            }
+            // Hàng quân đen (trên cùng)
+            boardTiles[0].setPieceImage(image.BR, Side.BLACK);
+            boardTiles[1].setPieceImage(image.BN, Side.BLACK);
+            boardTiles[2].setPieceImage(image.BB, Side.BLACK);
+            boardTiles[3].setPieceImage(image.BQ, Side.BLACK);
+            boardTiles[4].setPieceImage(image.BK, Side.BLACK);
+            boardTiles[5].setPieceImage(image.BB, Side.BLACK);
+            boardTiles[6].setPieceImage(image.BN, Side.BLACK);
+            boardTiles[7].setPieceImage(image.BR, Side.BLACK);
+
+            // Hàng quân trắng (dưới cùng)
+            boardTiles[56].setPieceImage(image.WR, Side.WHITE);
+            boardTiles[57].setPieceImage(image.WN, Side.WHITE);
+            boardTiles[58].setPieceImage(image.WB, Side.WHITE);
+            boardTiles[59].setPieceImage(image.WQ, Side.WHITE);
+            boardTiles[60].setPieceImage(image.WK, Side.WHITE);
+            boardTiles[61].setPieceImage(image.WB, Side.WHITE);
+            boardTiles[62].setPieceImage(image.WN, Side.WHITE);
+            boardTiles[63].setPieceImage(image.WR, Side.WHITE);
+        }
+        // bên đen
+        else {
+            // hàng chốt
+            for (int i = 0; i < 8; ++i) {
+                // trắng trên
+                boardTiles[8 + i].setPieceImage(image.WP, Side.WHITE);
+
+                // đen dưới
+                boardTiles[48 + i].setPieceImage(image.BP, Side.BLACK);
+            }
+            // quân trắng bên trên
+            boardTiles[0].setPieceImage(image.WR, Side.WHITE);
+            boardTiles[1].setPieceImage(image.WN, Side.WHITE);
+            boardTiles[2].setPieceImage(image.WB, Side.WHITE);
+            boardTiles[3].setPieceImage(image.WK, Side.WHITE);
+            boardTiles[4].setPieceImage(image.WQ, Side.WHITE);
+            boardTiles[5].setPieceImage(image.WB, Side.WHITE);
+            boardTiles[6].setPieceImage(image.WN, Side.WHITE);
+            boardTiles[7].setPieceImage(image.WR, Side.WHITE);
+
+            // quân đen bên dưới
+            boardTiles[56].setPieceImage(image.BR, Side.BLACK);
+            boardTiles[57].setPieceImage(image.BN, Side.BLACK);
+            boardTiles[58].setPieceImage(image.BB, Side.BLACK);
+            boardTiles[59].setPieceImage(image.BK, Side.BLACK);
+            boardTiles[60].setPieceImage(image.BQ, Side.BLACK);
+            boardTiles[61].setPieceImage(image.BB, Side.BLACK);
+            boardTiles[62].setPieceImage(image.BN, Side.BLACK);
+            boardTiles[63].setPieceImage(image.BR, Side.BLACK);
+        }
+    }
+    //============================
     
     
     // ===== DI CHUYỂN =====
@@ -585,6 +654,16 @@ public abstract class BoardPanel extends JPanel{
         }
     }
     
+    // lấy ra kí tự file, rank để tô cho ô cờ
+    public String getFileLabel(int col) {
+        return flip ? files[7 - col] : files[col];
+    }
+
+    // get rank label by visual row
+    public String getRankLabel(int row) {
+        return flip ? ranks[7 - row] : ranks[row];
+    }
+    
     // in ra index của ô cờ để kiểm tra
     public void printTilePanelIndex() {
         for(int i = 0; i < 64; ++i) {
@@ -595,9 +674,6 @@ public abstract class BoardPanel extends JPanel{
     //==================
     
     //===== ABSTRACT METHOD =====
-    // hai bàn cờ con sẽ tự có phương thức setPieceImage
-    public abstract void setPieceImage();
-    
     // hai bàn cờ con sẽ tự có handlerMovePiece
     public abstract void handlerMovePiece(int tileID);
 }

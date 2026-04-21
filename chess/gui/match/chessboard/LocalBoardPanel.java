@@ -18,47 +18,15 @@ import javax.swing.SwingUtilities;
 public class LocalBoardPanel extends BoardPanel {
 
     public LocalBoardPanel() {
-        super();
+        super(false);
         // Vẽ bàn cờ và đặt quân
-        this.drawBoard(true);
-        setPieceImage();
+        this.drawBoard();
+        this.setPieceImage();
         // Không cần playMove giả như BlackBoardPanel cũ
         // ChessGame mặc định WHITE đi trước → đúng luật
         this.printTilePanelIndex();
     }
 
-    // =====================
-    // ĐẶT QUÂN CỜ BAN ĐẦU
-    // =====================
-    // Góc nhìn trắng: trắng dưới (index 48-63), đen trên (index 0-15)
-    @Override
-    public void setPieceImage() {
-        // Hàng chốt
-        for (int i = 0; i < 8; i++) {
-            boardTiles[8 + i].setPieceImage(image.BP, Side.BLACK);   // chốt đen hàng 2 từ trên
-            boardTiles[48 + i].setPieceImage(image.WP, Side.WHITE);  // chốt trắng hàng 7
-        }
-
-        // Hàng quân đen (trên cùng)
-        boardTiles[0].setPieceImage(image.BR, Side.BLACK);
-        boardTiles[1].setPieceImage(image.BN, Side.BLACK);
-        boardTiles[2].setPieceImage(image.BB, Side.BLACK);
-        boardTiles[3].setPieceImage(image.BQ, Side.BLACK);
-        boardTiles[4].setPieceImage(image.BK, Side.BLACK);
-        boardTiles[5].setPieceImage(image.BB, Side.BLACK);
-        boardTiles[6].setPieceImage(image.BN, Side.BLACK);
-        boardTiles[7].setPieceImage(image.BR, Side.BLACK);
-
-        // Hàng quân trắng (dưới cùng)
-        boardTiles[56].setPieceImage(image.WR, Side.WHITE);
-        boardTiles[57].setPieceImage(image.WN, Side.WHITE);
-        boardTiles[58].setPieceImage(image.WB, Side.WHITE);
-        boardTiles[59].setPieceImage(image.WQ, Side.WHITE);
-        boardTiles[60].setPieceImage(image.WK, Side.WHITE);
-        boardTiles[61].setPieceImage(image.WB, Side.WHITE);
-        boardTiles[62].setPieceImage(image.WN, Side.WHITE);
-        boardTiles[63].setPieceImage(image.WR, Side.WHITE);
-    }
 
     // =====================
     // XỬ LÝ NƯỚC ĐI

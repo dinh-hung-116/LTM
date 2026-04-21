@@ -124,69 +124,60 @@ public class TilePanel extends JPanel {
     // Hàm này sẽ được chạy khi phương thức paint hoặc repaint được gọi
     @Override
     protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+        super.paintComponent(g);
 
-            // 1. Tô màu ô trước
-            g.setColor(tileColor);
+        // tile color
+        g.setColor(tileColor);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        // highlight
+        if (isHighlighted) {
+            g.setColor(guiUtils.HIGHLIGHT);
             g.fillRect(0, 0, getWidth(), getHeight());
-
-            // 2. Highlight ô cờ nếu có(isHighlighted == true)
-            if (isHighlighted) {
-                g.setColor(guiUtils.HIGHLIGHT); // màu theo guiUitls
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-
-            // 3. Tô màu quân cờ nếu có
-            if (pieceImage != null) {
-                g.drawImage(pieceImage, 0, 0, getWidth(), getHeight(), this);
-                /*
-                int topPadding = 4;
-                int sidePadding = 4;
-                int bottomPadding = 10; // extra space for file letters
-
-                g.drawImage(
-                    pieceImage,
-                    sidePadding,
-                    topPadding,
-                    getWidth() - 2 * sidePadding,
-                    getHeight() - topPadding - bottomPadding,
-                    this
-                );
-*/
-            }
-            
-            // 4. vẽ tọa độ(file và rank)
-            //drawNotation(g);
         }
 
-        private void drawNotation(Graphics g) {
-        int row = index / 8;
-        int col = index % 8;
+        // piece
+        if (pieceImage != null) {
+            g.drawImage(pieceImage, 0, 0, getWidth(), getHeight(), this);
+        }
 
-        g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+        // notation
+        drawNotation(g);
+    }
 
-        // 🎯 Rank (1–8) → only left column
+    private void drawNotation(Graphics g) {
+
+        // visual position in board
+        int visualPos = boardPanel.getComponentZOrder(this);
+
+        int row = visualPos / 8;
+        int col = visualPos % 8;
+
+        g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        g.setColor(getContrastColor());
+
+        // rank on left side
         if (col == 0) {
-            String rank = String.valueOf(8 - row);
-            g.setColor(getContrastColor());
+            String rank = boardPanel.getRankLabel(row);
             g.drawString(rank, 5, 15);
         }
 
-        // 🎯 File (a–h) → only bottom row
+        // file on bottom side
         if (row == 7) {
-            char fileChar = (char) ('a' + col);
-            String file = String.valueOf(fileChar);
-            g.setColor(getContrastColor());
+            String file = boardPanel.getFileLabel(col);
             g.drawString(file, getWidth() - 15, getHeight() - 5);
         }
     }
-        
-    private Color getContrastColor() {
-        int brightness = (tileColor.getRed() + tileColor.getGreen() + tileColor.getBlue()) / 3;
 
-        // softer colors instead of pure black/white
-        return brightness < 128 
-            ? new Color(240, 240, 240)  // off-white
-            : new Color(60, 60, 60);    // dark gray
+    private Color getContrastColor() {
+
+        int brightness =
+            (tileColor.getRed()
+            + tileColor.getGreen()
+            + tileColor.getBlue()) / 3;
+        
+        return brightness < 128
+                ? new Color(240,240,240)
+                : new Color(60,60,60);
     }
 }
