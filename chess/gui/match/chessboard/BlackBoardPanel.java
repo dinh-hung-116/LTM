@@ -1,6 +1,6 @@
 package chess.gui.match.chessboard;
 
-import gui.match.chessboard.Assets;
+import chess.gui.match.chessboard.Assets;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
@@ -12,7 +12,7 @@ public class BlackBoardPanel extends BoardPanel {
     public BlackBoardPanel() {
         super();
 
-        this.drawBoard();
+        this.drawBoard(false);
         setPieceImage();
         
         // cho quân trắng đi trước để quân đen có thể di chuyển
@@ -140,7 +140,7 @@ public class BlackBoardPanel extends BoardPanel {
                 System.out.println("BLACK move: " + sourceTile + " -> " + index);
 
                 // kiểm tra nước đi (phải flip cả source và target)
-                if (this.movePiece(flipIndex(sourceTile), flipIndex(index))) {
+                if (this.isLegalMove(flipIndex(sourceTile), flipIndex(index))) {
 
                     // update UI (KHÔNG flip ở đây vì đang dùng UI index)
                     indexTile.setPieceImage(

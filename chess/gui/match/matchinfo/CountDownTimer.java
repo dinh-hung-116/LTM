@@ -100,7 +100,7 @@ public class CountDownTimer {
     public boolean isTimeUp() {
         return this.getRemainingTime() <= 0;
     }
-    
+    /*
     public static void main(String[] args) throws InterruptedException {
         CountDownTimer  clock = new CountDownTimer();
         clock.setDuration(10*1000);
@@ -114,4 +114,5 @@ public class CountDownTimer {
             if(clock.isTimeUp()) break;
         }
     }
+    */
 }

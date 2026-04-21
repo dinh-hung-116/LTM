@@ -5,6 +5,7 @@ package chess.gui.match;
 import chess.gui.match.chessboard.BlackBoardPanel;
 import chess.gui.match.chessboard.BoardPanel;
 import chess.gui.guiUtils;
+import chess.gui.match.chessboard.LocalBoardPanel;
 import javax.swing.JPanel;
 import chess.gui.match.matchinfo.*;
 import java.awt.GridBagConstraints;
@@ -35,7 +36,7 @@ public class MatchPanel extends JPanel {
         super.setLayout(new GridBagLayout());
         
         // khởi tạo thành phần
-        this.boardPanel = new BlackBoardPanel();
+        this.boardPanel = new LocalBoardPanel();
         
         this.sideBar = new SideBar();
         
@@ -51,6 +52,8 @@ public class MatchPanel extends JPanel {
         
         // thử cho đồng hồ bên b chạy
         this.blackInfo.startClock();
+        
+        listener();
         
     }
     
@@ -118,6 +121,12 @@ public class MatchPanel extends JPanel {
         this.add(this.sideBar, gbc);
     }
     
+    //===== LOGIC =====
+    private void listener() {
+        // kết nối board với sidebar để hiển thị nước đi
+        this.boardPanel.setMoveListener(notation -> this.sideBar.addMove(notation));
+    }
+    //=================
     // có thể sẽ có phương thức để khởi động ván đấu
     
 }

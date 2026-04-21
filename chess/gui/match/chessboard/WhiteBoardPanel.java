@@ -1,7 +1,7 @@
 package chess.gui.match.chessboard;
 
 
-import gui.match.chessboard.Assets;
+
 import io.github.wolfraam.chessgame.ChessGame;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
@@ -19,7 +19,7 @@ public class WhiteBoardPanel extends BoardPanel {
         super();
         
         // vẽ ô và quân cờ
-        this.drawBoard();
+        this.drawBoard(true);
         setPieceImage();
         
         //printSquare();
@@ -109,7 +109,7 @@ public class WhiteBoardPanel extends BoardPanel {
                     }
                     */
                     // kiểm tra xem nước đi có hợp lệ và đã được thực thi thì cập nhật lại Tile
-                    if(this.movePiece(this.sourceTile, index)) {
+                    if(this.isLegalMove(this.sourceTile, index)) {
                         
                         // cập nhật ảnh và side cho ô cờ mới 
                         // lấy ảnh và Side của ô cờ cũ và cập nhật cho ô mới
