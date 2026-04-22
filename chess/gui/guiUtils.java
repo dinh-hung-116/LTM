@@ -58,6 +58,8 @@ public class guiUtils {
 
     // màu xanh biển nhạt
     public static final Color HIGHLIGHT = new Color(100, 180, 255, 90);
+    // màu đỏ nhạt
+    public static final Color CHECK_HIGHLIGHT = new Color(235, 97, 80, 180);
     
     // thời lượng một ván cờ, 10'
     public static final long MATCH_DURATION = 10 * 60 * 1000;

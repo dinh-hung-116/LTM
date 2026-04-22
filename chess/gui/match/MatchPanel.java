@@ -26,6 +26,10 @@ public class MatchPanel extends JPanel {
     private PlayerInfoPanel whiteInfo;
     private PlayerInfoPanel blackInfo;
     
+    // hai panel để gán cho hai panel phía trên 
+    private PlayerInfoPanel top;
+    private PlayerInfoPanel bottom;
+    
     // dùng để điều chỉnh layout
     private GridBagConstraints gbc;
     
@@ -40,8 +44,8 @@ public class MatchPanel extends JPanel {
         
         this.sideBar = new SideBar();
         
-        this.whiteInfo = new PlayerInfoPanel("UserA");
-        this.blackInfo = new PlayerInfoPanel("UserB");
+        this.top = new PlayerInfoPanel("UserA");
+        this.bottom = new PlayerInfoPanel("UserB");
         
         this.gbc = new GridBagConstraints();
         
@@ -49,9 +53,9 @@ public class MatchPanel extends JPanel {
         
         // add components
         initMatchPanel();
-        
-        // thử cho đồng hồ bên b chạy
-        this.blackInfo.startClock();
+        configPlayerInfo();
+        // cho đồng hồ chạy
+        this.switchClock();
         
         listener();
         
@@ -79,7 +83,7 @@ public class MatchPanel extends JPanel {
         gbc.insets = new Insets(10, 5, 5, 10);
         
         // tạm thời cho userA và B vào đây
-        this.add(this.whiteInfo, gbc);
+        this.add(this.top, gbc);
         
         // C(0;1)
         // BoardPanel
@@ -105,7 +109,7 @@ public class MatchPanel extends JPanel {
         
         gbc.insets = new Insets(5, 5, 10, 10);
         
-        this.add(this.blackInfo, gbc);
+        this.add(this.bottom, gbc);
         
         //--RIGHT COLUMN--
         // B(1;0)
@@ -121,10 +125,49 @@ public class MatchPanel extends JPanel {
         this.add(this.sideBar, gbc);
     }
     
+    public void configPlayerInfo() {
+        // nếu là bên trắng -> !flip = true
+        if(!this.boardPanel.isFlip()) {
+            this.whiteInfo = this.bottom;
+            this.blackInfo = this.top;
+        }
+        // bên đen thì ngược lại
+        else {
+            this.whiteInfo = top;
+            this.blackInfo = bottom;
+        }
+    }
     //===== LOGIC =====
     private void listener() {
-        // kết nối board với sidebar để hiển thị nước đi
-        this.boardPanel.setMoveListener(notation -> this.sideBar.addMove(notation));
+        // kết nối board với sidebar để hiển thị nước đi và đổi lượt đồng hồ
+        this.boardPanel.setMoveListener(notation -> {
+            this.sideBar.addMove(notation);
+            this.switchClock();
+        });
+        
+        // hiển thị game over
+        this.boardPanel.setGameOverListener(msg -> this.sideBar.showGameOver(msg));
+        
+        /*
+        *Lambda trong trường hợp này sẽ tạo một lớp ẩn và gán interface cho đối tượng đó
+        *đối tượng sau khi được gán interface sẽ có thể Override phương thức trong interface đó.
+        *Trong trường hợp thêm nước đi vào lịch sử thì phương thức onMoveMade(String notation)
+        *sẽ được override để gọi addMove(String notation) từ SideBar
+        *với tham số là notation từ onMoveMade(...)
+        *CHÚ Ý: lambda sẽ tạo và gán phương thức cho interface để khi phương thức interface được gọi thì sẽ
+        *thực hiện những hàm có trong lambda
+        */
+    }
+    
+    // hàm để đổi lượt đồng hồ
+    private void switchClock() {
+        if(boardPanel.isWhiteTurn()) {
+            whiteInfo.startClock();
+            blackInfo.stopClock();
+        } else {
+            blackInfo.startClock();
+            whiteInfo.stopClock();
+        }
     }
     //=================
     // có thể sẽ có phương thức để khởi động ván đấu

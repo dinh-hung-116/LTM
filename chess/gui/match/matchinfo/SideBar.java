@@ -129,22 +129,6 @@ public class SideBar extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(8, 8, 4, 8);
         this.add(wrapper, gbc);
-        
-        /*
-        // Placeholder chat ở giữa
-        JPanel chatPlaceholder = new JPanel();
-        chatPlaceholder.setBackground(new Color(30, 28, 26));
-        chatPlaceholder.setBorder(BorderFactory.createLineBorder(new Color(60, 58, 55), 1));
-        JLabel chatLabel = new JLabel("Chat", SwingConstants.CENTER);
-        chatLabel.setForeground(new Color(100, 100, 100));
-        chatLabel.setFont(new Font("Segoe UI", Font.ITALIC, 13));
-        chatPlaceholder.add(chatLabel);
-
-        gbc.gridy = 1;
-        gbc.weighty = 0.4;
-        gbc.insets = new Insets(4, 8, 4, 8);
-        this.add(chatPlaceholder, gbc);
-        */
     }
 
     // Gọi từ bên ngoài sau mỗi nước đi hợp lệ
@@ -342,6 +326,46 @@ public class SideBar extends JPanel {
         chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
     //==================
+    
+    //===== GAME OVER =====
+    // Hiển thị thông báo kết thúc ván ngay trong bảng nước đi
+    public void showGameOver(String message) {
+        SwingUtilities.invokeLater(() -> {
+            // Tạo panel thông báo
+            JPanel resultPanel = new JPanel(new BorderLayout());
+            resultPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+            resultPanel.setPreferredSize(new Dimension(guiUtils.MATCH_INFO_FRAME_WIDTH, 48));
+            resultPanel.setBackground(new Color(80, 120, 80));
+            resultPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(2, 0, 2, 0, new Color(100, 160, 100)),
+                    BorderFactory.createEmptyBorder(4, 8, 4, 8)
+            ));
+
+            JLabel resultLabel = new JLabel(message, SwingConstants.CENTER);
+            resultLabel.setForeground(Color.WHITE);
+            resultLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+            resultPanel.add(resultLabel, BorderLayout.CENTER);
+
+            moveListPanel.add(resultPanel);
+            moveListPanel.revalidate();
+            moveListPanel.repaint();
+
+            // Scroll xuống để thấy thông báo
+            SwingUtilities.invokeLater(() -> {
+                int max = moveScrollPane.getVerticalScrollBar().getMaximum();
+                moveScrollPane.getVerticalScrollBar().setValue(max);
+            });
+
+            // Hiện thêm dialog popup
+            javax.swing.JOptionPane.showMessageDialog(
+                    SwingUtilities.getWindowAncestor(this),
+                    message,
+                    "Kết thúc ván đấu",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
+        });
+    }
+    //=====================
     
     //===== HELPERS =====
     private JLabel makeLabel(String text, Color fg, int align, Font font) {

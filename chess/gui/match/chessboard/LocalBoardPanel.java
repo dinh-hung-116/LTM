@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 public class LocalBoardPanel extends BoardPanel {
 
     public LocalBoardPanel() {
-        super(true);
+        super(false);
         // Vẽ bàn cờ và đặt quân
         this.drawBoard();
         this.setPieceImage();
@@ -59,15 +59,10 @@ public class LocalBoardPanel extends BoardPanel {
             // lấy index srcIndex
             int srcIndex = this.sourceTile.getIndex();
 
-            // Lưu lại set nước đi hợp lệ trước khi engine cập nhật
-            HashSet<Move> legalMoves =
-                    (HashSet<Move>) this.chessGame.getLegalMoves(
-                            this.fromTilePanelToSquare(srcIndex));
-
             // --- TH: Bấm lại cùng ô → hủy chọn ---
             if (srcIndex == index) {
                 System.out.println("[" + currentSide + "] hủy chọn ô: " + index);
-                this.clearAllHighlighted();
+                this.clearAllMovesHighlighted();
                 this.sourceTile = null;
                 return;
             }
@@ -75,7 +70,7 @@ public class LocalBoardPanel extends BoardPanel {
             // --- TH: Bấm quân cùng màu khác → chuyển sang quân đó ---
             if (!indexTile.isEmpty() && indexTile.getSide() == currentSide) {
                 // Tắt highlight quân cũ
-                this.clearAllHighlighted();
+                this.clearAllMovesHighlighted();
 
                 // Chọn quân mới
                 this.sourceTile = indexTile;
@@ -134,12 +129,25 @@ public class LocalBoardPanel extends BoardPanel {
             }
             
             //===== MOVE LISTENER =====
+            // thêm nước đi vào lịch sử
             if (this.moveListener != null && validMove) {
                 System.out.println(notation);
                 this.moveListener.onMoveMade(notation);
             } 
+            /*
+            - Sau mỗi nước đi hợp lệ thực hiện:
+            + Kiểm tra kết thức game
+            + Kiểm tra highlight khi vua bị chiếu
+            */
+            if (validMove) {
+                this.checkGameOver();
+                
+                if(this.chessGame.isKingAttacked()) this.highlightKingInCheck(this.chessGame.getSideToMove());
+                // tắt highlight của bên bị chiếu trước đó do khi bị chiếu thì bắt buộc phải thoát chiếu
+                // lấy current vì sau khi thực hiện nước đi thì chessGame đã đổi bên di chuyển
+                this.clearCheckHighlighted(currentSide);
+            }
             //=========================
-            
             else {
                 System.out.println("TH2: no");
             }

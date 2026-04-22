@@ -8,6 +8,8 @@ import io.github.wolfraam.chessgame.board.PieceType;
 import io.github.wolfraam.chessgame.board.Side;
 import io.github.wolfraam.chessgame.board.Square;
 import io.github.wolfraam.chessgame.move.Move;
+import io.github.wolfraam.chessgame.result.ChessGameResult;
+import io.github.wolfraam.chessgame.result.ChessGameResultType;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
@@ -76,8 +78,14 @@ public abstract class BoardPanel extends JPanel{
         void onMoveMade(String notation);
     }
     
+    // interface đê kết thúc game
+    public interface GameOverListener {
+        void onGameOver(String resultMsg);
+    }
+    
     // biến interface
     protected MoveListener moveListener;
+    protected GameOverListener gameOverListener;
 
     
     protected BoardPanel(boolean flip) {
@@ -110,6 +118,62 @@ public abstract class BoardPanel extends JPanel{
         this.moveListener = listener;
     }
     //=========================
+    
+    //===== GAME OVER LISTENER =====
+    public void setGameOverListener(GameOverListener listener) {
+        this.gameOverListener = listener;
+    }
+
+    // Kiểm tra trạng thái ván cờ sau mỗi nước đi
+    // Trả về true nếu ván đã kết thúc
+    public boolean checkGameOver() {
+        ChessGameResultType resultType = this.chessGame.getGameResultType();
+
+        if (resultType == null) return false;
+
+        String message;
+        switch (resultType) {
+            case WHITE_WINS:
+                // Phân biệt chiếu hết vs đầu hàng (đây là chiếu hết do engine tự phát hiện)
+                message = "Trắng thắng! Chiếu hết!";
+                break;
+            case BLACK_WINS:
+                message = "Đen thắng! Chiếu hết!";
+                break;
+            case DRAW:
+                ChessGameResult result = this.chessGame.getGameResult();
+                String drawReason = "Hòa!";
+                if (result != null && result.drawType != null) {
+                    switch (result.drawType) {
+                        case STALE_MATE:
+                            drawReason = "Hòa! (hết nước đi)";
+                            break;
+                        case INSUFFICIENT_MATERIAL:
+                            drawReason = "Hòa! (Không đủ quân chiếu hết)";
+                            break;
+                        case FIFTY_MOVE_RULE:
+                            drawReason = "Hòa! (Quy tắc 50 nước)";
+                            break;
+                        case THREEFOLD_REPETITION:
+                            drawReason = "Hòa! (Lặp lại 3 lần)";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                message = drawReason;
+                break;
+            default:
+                return false;
+        }
+
+        if (this.gameOverListener != null) {
+            final String msg = message;
+            javax.swing.SwingUtilities.invokeLater(() -> this.gameOverListener.onGameOver(msg));
+        }
+        return true;
+    }
+    //==============================
     
     //===== THIẾT LẬP UI BÀN CỜ =====
     // vẽ ô cờ, ô cờ không thay đổi dù lật ngược
@@ -214,7 +278,7 @@ public abstract class BoardPanel extends JPanel{
     
     
     // ===== DI CHUYỂN =====
-    // - Gồm các nước: 
+    // - Di chuyển thông thường gồm các nước: 
     // + thông thường
     // + ăn quân
     //* CHÚ Ý: CHƯA XÉT CÁC TRƯỜNG HỢP ĐẶC BIỆT NHƯ EN PASSANT, PHONG CẤP VÀ NHẬP THÀNH
@@ -254,8 +318,8 @@ public abstract class BoardPanel extends JPanel{
         // Xóa ô nguồn
                 
         srcTile.clear();
-        this.clearAllHighlighted();
-        System.out.println("source: " + srcTile.getIndex() + "\ndest: " + destTile.getIndex());
+        this.clearAllMovesHighlighted();
+        //System.out.println("source: " + srcTile.getIndex() + "\ndest: " + destTile.getIndex());
                 
         // Reset srcIndex → lượt tiếp theo tự động là bên kia (engine tự chuyển)
         this.sourceTile = null;
@@ -322,7 +386,7 @@ public abstract class BoardPanel extends JPanel{
         destTile.setPieceImage(srcTile.getPieceImage(), srcTile.getSide());
         // Xóa ô nguồn
         srcTile.clear();
-        this.clearAllHighlighted();
+        this.clearAllMovesHighlighted();
         
         // xóa ô có quân chốt bị ăn
         this.getTilePanelWithIndex(capturedPawn).clear();
@@ -357,7 +421,7 @@ public abstract class BoardPanel extends JPanel{
         BufferedImage destImage = getPromotedImage(promotion, srcTile.getSide());
         destTile.setPieceImage(destImage, srcTile.getSide());
         srcTile.clear();
-        this.clearAllHighlighted();
+        this.clearAllMovesHighlighted();
         this.sourceTile = null;
         
         String n = move.toString().replace(" ", "").substring(0, 6);
@@ -496,7 +560,7 @@ public abstract class BoardPanel extends JPanel{
         rookNewTile.setPieceImage(rookOldTile.getPieceImage(), currentSide);
         rookOldTile.clear();
 
-        this.clearAllHighlighted();
+        this.clearAllMovesHighlighted();
 
         this.sourceTile = null;
         
@@ -510,16 +574,36 @@ public abstract class BoardPanel extends JPanel{
     }
     
     //===== HIGHLIGHT =====
-    // Phương thức tắt highlight mọi ô 
+    // tắt mọi ô highlight kể cả ô chiếu
     public void clearAllHighlighted() {
+        for(int i = 0; i < 64; ++i) {
+            this.boardTiles[i].setHighlighted(false);
+            this.boardTiles[i].setCheckHighlighted(false);
+        }
+    }
+    
+    // Phương thức tắt highlight mọi ô nước đi hợp lệ, ngoại trừ ô bị chiếu
+    public void clearAllMovesHighlighted() {
        for(int i = 0; i < this.boardTiles.length; ++i) {
-           this.boardTiles[i].setHighlighted(false);
+           // nếu ô đó đang bị chiếu -> true -> không tắt highlight
+           if(!this.boardTiles[i].getIsCheckHighlighted()) {
+               this.boardTiles[i].setHighlighted(false);
+           }
        }
     }
     
     // Phương thức tắt highlight 1 ô
     public void clearTileHighlight(int index) {
         this.boardTiles[index].setHighlighted(false);
+    }
+    
+    // phương thức tắt checkhighlight 1 ô
+    public void clearCheckHighlighted(Side side) {
+        // lấy ra ô có vua theo side
+        TilePanel kingTile = this.getKingTilePanel(side);
+        // phòng trường hợp di chuyển vua để thoát chiếu thì tắt cả hai loại highlight luôn
+        kingTile.setHighlighted(false);
+        kingTile.setCheckHighlighted(false);
     }
     
     // Phương thức tắt highlight các ô là nước đi hợp lệ
@@ -582,6 +666,15 @@ public abstract class BoardPanel extends JPanel{
         // bật ô các nước đi hợp lệ
         legalMovesHighlight(index);
     }
+    
+    // highlight ô có vua khi bị chiếu
+    public void highlightKingInCheck(Side side) {
+        // lấy ra TilePanel có chứa vua thuộc side
+        TilePanel king = this.getKingTilePanel(side);
+        
+        // bật highlight
+        king.setCheckHighlighted(true);
+    }
     //======================
     
     //===== ABORT =====
@@ -591,7 +684,7 @@ public abstract class BoardPanel extends JPanel{
         this.sourceTile = null;
         
         // tắt highlight mọi ô
-        this.clearAllHighlighted();
+        this.clearAllMovesHighlighted();
         
         // thông báo hàm được gọi
         System.out.println("Abort!");
@@ -647,11 +740,6 @@ public abstract class BoardPanel extends JPanel{
         System.out.println("[" + currentSide + "] đi: "
                 + fromTilePanelToSquare(this.sourceTile.getIndex())
                 + " → " + fromTilePanelToSquare(dest));
-        if (this.boardTiles[dest].getSide() != null) {
-            // kiểm tra side của quân cờ
-            System.out.println("source[" + this.boardTiles[this.sourceTile.getIndex()].getSide().toString() + "] - dest["
-                    + this.boardTiles[dest].getSide().toString() + "]");
-        }
     }
     
     // lấy ra kí tự file, rank để tô cho ô cờ
@@ -687,6 +775,28 @@ public abstract class BoardPanel extends JPanel{
         *Trắng: boardTiles[0].getIndex() = |0 - 0|
         *Đen: boardTiles[0].getIndex() = |63 - 0| = 63
         */
+    }
+    
+    // hàm để lấy ra TilePanel có chứa quân vua thuộc side
+    public TilePanel getKingTilePanel(Side side) {
+        TilePanel kingTilePanel = null;
+        BufferedImage kingImage;
+        if(side == Side.WHITE) kingImage = image.WK;
+        else kingImage = image.BK;
+        
+        for(int i = 0; i < 64; ++i) {
+            if(this.boardTiles[i].getPieceImage() == kingImage) return this.boardTiles[i];
+        }
+        
+        return kingTilePanel;
+    }
+    
+    public boolean isWhiteTurn() {
+        return this.chessGame.getSideToMove() == Side.WHITE;
+    }
+    
+    public boolean isFlip() {
+        return this.flip;
     }
     //==================
     

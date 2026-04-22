@@ -31,8 +31,10 @@ public class TilePanel extends JPanel {
     // ảnh của quân cờ(nếu không có thì là null)
     private BufferedImage pieceImage;
     
-    // biến để kiểm soát viejeecj hightlight quân cờ
+    // biến để kiểm soát việc hightlight quân cờ
     private boolean isHighlighted;
+    
+    private boolean isCheckHighlighted;
     
     // BoardPanel để Tile tạo yêu cầu cho bàn cờ khi xử lý chuột
     private BoardPanel boardPanel;
@@ -47,6 +49,7 @@ public class TilePanel extends JPanel {
         this.index = index;
         this.tileColor = tileColor;
         this.isHighlighted = false;
+        this.isCheckHighlighted = false;
         this.pieceImage = null;
         this.boardPanel = boardPanel;
         this.side = null;
@@ -95,6 +98,10 @@ public class TilePanel extends JPanel {
         return this.isHighlighted;
     }
     
+    public boolean getIsCheckHighlighted() {
+        return this.isCheckHighlighted;
+    }
+    
     // Đặt ảnh cho quân cờ
     public void setPieceImage(BufferedImage pieceImage, Side side) {
         this.pieceImage = pieceImage;
@@ -112,12 +119,19 @@ public class TilePanel extends JPanel {
         this.isHighlighted = highlighted;
         repaint();
     }
+    
+    // như trên nhưng là highlight ô vua bị chiếu
+    public void setCheckHighlighted(boolean value) {
+        this.isCheckHighlighted = value;
+        repaint();
+    }
 
     // đưa ô cờ về lại trạng thái ban đầu(ô trống)
     public void clear() {
         this.pieceImage = null;
         this.side = null;
         this.isHighlighted = false;
+        this.isCheckHighlighted = false;
         repaint();
     }
     
@@ -139,6 +153,12 @@ public class TilePanel extends JPanel {
         if (isHighlighted) {
             g.setColor(guiUtils.HIGHLIGHT);
             g.fillRect(0, 0, getWidth(), getHeight());
+        }
+        
+        // check highlight
+        if (isCheckHighlighted) {
+            g.setColor(guiUtils.CHECK_HIGHLIGHT);
+            g.fillRect(0,0,getWidth(),getHeight());
         }
 
         // piece
