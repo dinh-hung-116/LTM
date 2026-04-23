@@ -2,7 +2,6 @@ package chess.gui.match;
 
 // Lớp này chứa bàn cờ, khung tên người dùng và ô tính năng
 
-import chess.gui.match.chessboard.BlackBoardPanel;
 import chess.gui.match.chessboard.BoardPanel;
 import chess.gui.guiUtils;
 import chess.gui.match.chessboard.LocalBoardPanel;
@@ -11,8 +10,6 @@ import chess.gui.match.matchinfo.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 // lớp này sẽ là một JPanel và dùng gridbaglayout
 public class MatchPanel extends JPanel {
@@ -146,7 +143,10 @@ public class MatchPanel extends JPanel {
         });
         
         // hiển thị game over
-        this.boardPanel.setGameOverListener(msg -> this.sideBar.showGameOver(msg));
+        this.boardPanel.setGameOverListener(msg -> {
+            this.sideBar.showGameOver(msg);
+            this.stopClock();
+        });
         
         /*
         *Lambda trong trường hợp này sẽ tạo một lớp ẩn và gán interface cho đối tượng đó
@@ -168,6 +168,11 @@ public class MatchPanel extends JPanel {
             blackInfo.startClock();
             whiteInfo.stopClock();
         }
+    }
+
+    private void stopClock() {
+        blackInfo.stopClock();
+        whiteInfo.stopClock();
     }
     //=================
     // có thể sẽ có phương thức để khởi động ván đấu
