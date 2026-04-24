@@ -10,6 +10,7 @@ import chess.gui.match.matchinfo.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import chess.database.Class.User;
 
 // lớp này sẽ là một JPanel và dùng gridbaglayout
 public class MatchPanel extends JPanel {
@@ -32,17 +33,20 @@ public class MatchPanel extends JPanel {
     
     // 2 khung tên người dùng sẽ tạm thời được chỉnh "cứng"
 
-    public MatchPanel() {
+    public MatchPanel(User loggedInUser) {
         super.setSize(guiUtils.OUTER_FRAME_DIMENSION);
         super.setLayout(new GridBagLayout());
         
         // khởi tạo thành phần
         this.boardPanel = new LocalBoardPanel();
-        
         this.sideBar = new SideBar();
-        
-        this.top = new PlayerInfoPanel("UserA");
-        this.bottom = new PlayerInfoPanel("UserB");
+
+        //kiem tra usser
+        String bottomName = loggedInUser != null ? loggedInUser.getFullName() : "Khách";
+        String topName = "Đối thủ";
+
+        this.top = new PlayerInfoPanel(topName);
+        this.bottom = new PlayerInfoPanel(bottomName);
         
         this.gbc = new GridBagConstraints();
         
