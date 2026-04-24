@@ -1,6 +1,6 @@
-package com.chess.database.DAO;
+package chess.database.DAO;
 
-import com.chess.database.Class.User;
+import chess.database.Class.User;
 import java.util.ArrayList;
 import java.sql.*;
 import java.time.LocalDate;
@@ -140,6 +140,81 @@ public class UserDAO {
         }
         return false;
     }
+
+    // Kiểm tra đăng nhập
+    public static User checkLogin(String userName, String passwordHash) {
+        String sql = "SELECT * FROM user WHERE user_name = ? AND password_hash = ?;";
+        User result = null;
+        
+        try (
+                Connection conn = SQLiteConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);) {
+                
+            ps.setString(1, userName);
+            ps.setString(2, passwordHash);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            // Nếu có kết quả tức là tài khoản/mật khẩu hợp lệ
+            if(rs.next()) {
+                result = mapResultSetToUser(rs);
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
+
+    public static boolean registerUser(User user, int initialElo) {
+    String insertUserSql = "INSERT INTO user(user_name, password_hash, full_name, gender, date_of_birth) VALUES(?, ?, ?, ?, ?);";
+    String insertStatsSql = "INSERT INTO user_stats(user_id, total_games, wins, losses, draws, winning_streak, losing_streak, elo, win_rate) VALUES(?, 0, 0, 0, 0, 0, 0, ?, 0.0);";
+
+    Connection conn = null;
+    try {
+        conn = SQLiteConnection.getConnection();
+        // Tắt chế độ tự động lưu để bắt đầu Transaction
+        conn.setAutoCommit(false);
+
+        // BƯỚC 1: Thêm User và yêu cầu trả về ID tự động sinh ra
+        PreparedStatement psUser = conn.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
+        psUser.setString(1, user.getUserName());
+        psUser.setString(2, user.getPasswordHash());
+        psUser.setString(3, user.getFullName());
+        psUser.setString(4, user.getGender());
+        psUser.setString(5, user.getDateOfBirth().toString());
+        psUser.executeUpdate();
+
+        // Lấy user_id vừa tạo
+        ResultSet rs = psUser.getGeneratedKeys();
+        int generatedId = -1;
+        if (rs.next()) {
+            generatedId = rs.getInt(1);
+        }
+
+        // BƯỚC 2: Thêm bản ghi vào user_stats sử dụng ID vừa lấy
+        if (generatedId != -1) {
+            PreparedStatement psStats = conn.prepareStatement(insertStatsSql);
+            psStats.setInt(1, generatedId);
+            psStats.setInt(2, initialElo);
+            psStats.executeUpdate();
+            
+            // BƯỚC 3: Mọi thứ ổn thỏa, lưu vĩnh viễn vào DB
+            conn.commit();
+            return true;
+        }
+
+    } catch (SQLException e) {
+        if (conn != null) {
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+        }
+        e.printStackTrace();
+    } finally {
+        if (conn != null) SQLiteConnection.closeConnection(conn);
+    }
+    return false;
+}
 
     
     // HELPER: trả về biến User

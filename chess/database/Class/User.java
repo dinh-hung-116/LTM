@@ -1,4 +1,4 @@
-package com.chess.database.Class;
+package chess.database.Class;
 
 import java.time.LocalDate;
 

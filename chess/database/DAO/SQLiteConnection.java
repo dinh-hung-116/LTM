@@ -1,8 +1,8 @@
-package com.chess.database.DAO;
+package chess.database.DAO;
 
-import com.chess.database.Class.ChessMatch;
-import com.chess.database.Class.User;
-import com.chess.database.Class.UserStats;
+import chess.database.Class.ChessMatch;
+import chess.database.Class.User;
+import chess.database.Class.UserStats;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,13 +20,14 @@ Database
 */
 public class SQLiteConnection {
     // Chú ý: Cẩn thận với đường dẫn do phương thức .getAbsolutePath có thể bỏ qua root project
-    private static final String path = new File("src\\Database\\db\\ltmchess.db").getAbsolutePath();
-    
+    //private static final String path = new File("jdbc:sqlite:chess/database/DB/ltmchess.db").getAbsolutePath();
+    // Sử dụng đường dẫn tuyệt đối thẳng tới file DB của bạn
+    private static final String RELATIVE_PATH = "chess/database/DB/ltmchess.db";
     public static Connection getConnection() {
         // path có thể thay đổi dựa trên các cấu trúc thư mục khác
         
         try {
-            Connection con = DriverManager.getConnection("jdbc:sqlite:" + path);
+            Connection con = DriverManager.getConnection("jdbc:sqlite:" + RELATIVE_PATH);
             return con;
         } catch (SQLException e) {
             System.out.println("Lỗi khi kết nối tới cơ sở dữ liệu: ");
@@ -70,3 +71,4 @@ public class SQLiteConnection {
         }
     }
 }
+
