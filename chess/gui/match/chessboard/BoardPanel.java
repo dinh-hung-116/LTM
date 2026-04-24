@@ -489,10 +489,22 @@ public abstract class BoardPanel extends JPanel{
         Square from = fromTilePanelToSquare(source);
         Square to   = fromTilePanelToSquare(dest);
         
+        
         // kiểm tra xem source có phải là vua không
         if(this.chessGame.getPiece(from).pieceType != PieceType.KING) {
             return false;
         }
+        // kiểm tra xem vua đã di chuyển chưa
+        // nếu chưa thì vua trắng phải luôn ở E1, vua đen phải luôn ở E8
+        //Lấy ô chứa vua ở gui
+        TilePanel kingTile = this.getTilePanelWithIndex(source);
+        // vua trắng, nếu đúng thì = true
+        boolean isWhiteFirstMove = (kingTile.getSide() == Side.WHITE && from == Square.E1);
+        // vua đen
+        boolean isBlackFirstMove = (kingTile.getSide() == Side.BLACK && from == Square.E8);
+        
+        if(!(isWhiteFirstMove || isBlackFirstMove)) return false;
+        
         // kiểm tra xem vua có đang đi tới ô để nhập thành không
         // nếu là vua trắng và đi tới ô C hoặc G -> đang cố nhập thành
         boolean whiteCastling = (side == Side.WHITE && (to == Square.C1 || to == Square.G1));
@@ -705,7 +717,7 @@ public abstract class BoardPanel extends JPanel{
     
     // phương thức để chuyển đổi tọa độ trên bàn cờ gui thành tọa độ trong bàn cờ engine
     // chuyển sang mảng 2 chiều java rồi chuyển sang tọa độ engine
-    // gui[64] -> [row][col] -> [FILE][RANK] 
+    // getTilePanelWithIndex(...) -> [row][col] -> [FILE][RANK] 
     public Square fromTilePanelToSquare(int index) {
         // chuyển tọa độ 1 chiều thành 2 chiều trong java
         int row = toRow(index);

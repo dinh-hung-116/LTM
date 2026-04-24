@@ -170,6 +170,7 @@ public class MatchPanel extends JPanel {
         }
     }
 
+    // tắt đồng hồ khi kết thúc trận
     private void stopClock() {
         blackInfo.stopClock();
         whiteInfo.stopClock();

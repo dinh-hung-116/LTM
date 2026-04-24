@@ -1,6 +1,7 @@
-package com.chess.database.Class;
+package chess.database.Class;
 
 import java.time.LocalDate;
+import org.mindrot.jbcrypt.BCrypt;
 
 // LỚP NÀY LƯU CÁC THÔNG TIN VỀ NGƯỜI DÙNG
 public class User {
@@ -75,4 +76,15 @@ public class User {
         return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + '}';
     }    
     
+    // phương thức hash mật khẩu để lưu trữ trong database
+    // phương thức này chủ yếu server dùng để lưu mặt khẩu hash
+    protected String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+    
+    // phương thức kiểm tra mật khẩu login
+    // cũng chủ yếu server dùng
+    protected boolean checkPassword(String plain, String hashed) {
+        return BCrypt.checkpw(plain, hashed);
+    }
 }
