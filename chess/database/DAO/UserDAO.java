@@ -142,6 +142,7 @@ public class UserDAO {
     }
     
     // Kiểm tra đăng nhập
+    // nếu đúng thì sẽ trả vể đối tượng User
     public static User checkLogin(String userName, String passwordHash) {
         String sql = "SELECT * FROM user WHERE user_name = ? AND password_hash = ?;";
         User result = null;

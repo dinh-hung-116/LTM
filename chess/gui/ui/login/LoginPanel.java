@@ -11,6 +11,17 @@ public class LoginPanel extends JPanel {
     private JTextField userField;
     private JPasswordField passField;
     private JButton loginBtn;
+    private JButton registerBtn;
+
+    // Login success listener
+    public interface LoginListener {
+        void onLoginSuccess(User user);
+    }
+
+    private LoginListener loginListener;
+
+    // Register button listener
+    private Runnable registerListener;
 
     public LoginPanel() {
         initComponents();
@@ -35,6 +46,16 @@ public class LoginPanel extends JPanel {
         loginBtn.setBackground(new Color(118, 150, 86));
         loginBtn.setForeground(Color.WHITE);
         loginBtn.setFocusPainted(false);
+
+        registerBtn = new JButton("Chưa có tài khoản? Đăng ký");
+        registerBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        registerBtn.setForeground(new Color(118, 150, 86));
+        registerBtn.setBorderPainted(false);
+        registerBtn.setContentAreaFilled(false);
+        registerBtn.setFocusPainted(false);
+        registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        registerBtn.setOpaque(false);
+
     }
 
     private void setupLayout() {
@@ -44,7 +65,6 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Title
         JLabel titleLabel = new JLabel("ĐĂNG NHẬP", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titleLabel.setForeground(new Color(118, 150, 86));
@@ -54,19 +74,18 @@ public class LoginPanel extends JPanel {
         gbc.gridwidth = 2;
         add(titleLabel, gbc);
 
-        // Username Label
+        gbc.gridwidth = 1;
+
         JLabel userLabel = new JLabel("Tên đăng nhập:");
         userLabel.setForeground(Color.WHITE);
 
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
         gbc.gridx = 0;
+        gbc.gridy = 1;
         add(userLabel, gbc);
 
         gbc.gridx = 1;
         add(userField, gbc);
 
-        // Password Label
         JLabel passLabel = new JLabel("Mật khẩu:");
         passLabel.setForeground(Color.WHITE);
 
@@ -77,28 +96,40 @@ public class LoginPanel extends JPanel {
         gbc.gridx = 1;
         add(passField, gbc);
 
-        // Login Button
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         add(loginBtn, gbc);
+
+        gbc.gridy = 4;
+        add(registerBtn, gbc);
     }
 
     private void setupActions() {
+
         loginBtn.addActionListener(e -> handleLogin());
+
         passField.addActionListener(e -> handleLogin());
+
+        registerBtn.addActionListener(e -> {
+            if (registerListener != null) {
+                registerListener.run();
+            }
+        });
     }
 
     private void handleLogin() {
+
         String username = userField.getText().trim();
         String password = new String(passField.getPassword()).trim();
 
         if (username.isEmpty() || password.isEmpty()) {
+
             JOptionPane.showMessageDialog(
-                this,
-                "Vui lòng nhập đầy đủ thông tin!",
-                "Cảnh báo",
-                JOptionPane.WARNING_MESSAGE
+                    this,
+                    "Vui lòng nhập đầy đủ thông tin!",
+                    "Cảnh báo",
+                    JOptionPane.WARNING_MESSAGE
             );
             return;
         }
@@ -106,29 +137,34 @@ public class LoginPanel extends JPanel {
         User loggedInUser = UserDAO.checkLogin(username, password);
 
         if (loggedInUser != null) {
+
             JOptionPane.showMessageDialog(
-                this,
-                "Chào mừng " + loggedInUser.getFullName() + "!"
+                    this,
+                    "Chào mừng " + loggedInUser.getFullName() + "!"
             );
 
-            Window window = SwingUtilities.getWindowAncestor(this);
-            if (window != null) {
-                window.dispose();
+            if (loginListener != null) {
+                loginListener.onLoginSuccess(loggedInUser);
             }
 
-            /*
-            SwingUtilities.invokeLater(() -> {
-                new GameFrame(loggedInUser).setVisible(true);
-            });
-*/
-
         } else {
+
             JOptionPane.showMessageDialog(
-                this,
-                "Sai tài khoản hoặc mật khẩu!",
-                "Lỗi đăng nhập",
-                JOptionPane.ERROR_MESSAGE
+                    this,
+                    "Sai tài khoản hoặc mật khẩu!",
+                    "Lỗi đăng nhập",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    // Login listener
+    public void setLoginListener(LoginListener listener) {
+        this.loginListener = listener;
+    }
+
+    // Register listener
+    public void setRegisterListener(Runnable listener) {
+        this.registerListener = listener;
     }
 }

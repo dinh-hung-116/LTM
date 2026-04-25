@@ -24,7 +24,7 @@ public class LocalBoardPanel extends BoardPanel {
         this.setPieceImage();
         // Không cần playMove giả như BlackBoardPanel cũ
         // ChessGame mặc định WHITE đi trước → đúng luật
-        this.printTilePanelIndex();
+        //this.printTilePanelIndex();
     }
 
 
