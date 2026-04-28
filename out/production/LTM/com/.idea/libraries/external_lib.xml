@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="external_lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/chess/external_lib/chessgame-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/chess/external_lib/guava-18.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/chess/external_lib/sqlite-jdbc-3.51.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/chess/external_lib/jbcrypt-0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

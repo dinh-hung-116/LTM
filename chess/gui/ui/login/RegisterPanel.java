@@ -1,7 +1,7 @@
-package chess.gui.ui.login;
+package com.chess.gui.ui.login;
 
-import chess.database.Class.User;
-import chess.database.DAO.UserDAO;
+import com.chess.database.Class.User;
+import com.chess.database.DAO.UserDAO;
 
 import javax.swing.*;
 import java.awt.*;

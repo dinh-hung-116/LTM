@@ -1,7 +1,7 @@
-package chess.gui.match.matchinfo;
+package com.chess.gui.match.matchinfo;
 
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,7 +48,23 @@ public class SideBar extends JPanel {
     private JButton resignBtn;
     private JButton drawBtn;
     //==================
-    
+
+    //===== Button Listeners =====
+    public interface ResignListener {
+        // isWhiteTurn = true nếu lượt hiện tại là TRẮNG đang đầu hàng
+        void onResign(boolean isWhiteTurn);
+    }
+
+    public interface DrawListener {
+        void onDraw();
+    }
+
+    private ResignListener resignListener;
+    private DrawListener   drawListener;
+    // true = lượt trắng, false = lượt đen (cập nhật từ MatchPanel sau mỗi nước)
+    private boolean isWhiteTurn = true;
+    //============================
+
     //===== Chatbox =====
     private JTextArea chatArea;
     private JTextField chatInput;
@@ -72,7 +88,7 @@ public class SideBar extends JPanel {
     }
 
     // ===========================
-    
+
     //===== MOVE HISTORY PANEL =====
     private void initMoveHistory() {
         // Panel chứa tiêu đề cột
@@ -106,10 +122,10 @@ public class SideBar extends JPanel {
         wrapper.setBorder(BorderFactory.createLineBorder(new Color(60, 58, 55), 1));
 
         GridBagConstraints wgbc = new GridBagConstraints();
-        wgbc.gridx = 0; 
+        wgbc.gridx = 0;
         wgbc.gridy = 0;
-        
-        wgbc.weightx = 1; 
+
+        wgbc.weightx = 1;
         wgbc.weighty = 0;
         wgbc.fill = GridBagConstraints.HORIZONTAL;
         wrapper.add(headerPanel, wgbc);
@@ -120,12 +136,12 @@ public class SideBar extends JPanel {
         wrapper.add(moveScrollPane, wgbc);
 
         // Thêm wrapper vào SideBar (chiếm ~60% chiều cao)
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 0;
-        
-        gbc.weightx = 1; 
+
+        gbc.weightx = 1;
         gbc.weighty = 0.6;
-        
+
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(8, 8, 4, 8);
         this.add(wrapper, gbc);
@@ -179,7 +195,7 @@ public class SideBar extends JPanel {
         });
     }
     // ===========================
-    
+
     //===== BUTTONS =====
     private void initButton() {
         resignBtn = new JButton();
@@ -188,8 +204,8 @@ public class SideBar extends JPanel {
         styleButton(drawBtn);
 
         int size = 40;
-        resignBtn.setIcon(loadIcon("/chess/gui/resources/flag.png", size, size));
-        drawBtn.setIcon(loadIcon("/chess/gui/resources/handshake.png", size, size));
+        resignBtn.setIcon(loadIcon("/com/chess/gui/resources/flag.png", size, size));
+        drawBtn.setIcon(loadIcon("/com/chess/gui/resources/handshake.png", size, size));
 
         JPanel btnPanel = new JPanel(new GridLayout(1, 2, 10, 0));
         btnPanel.setPreferredSize(guiUtils.BUTTON_FRAME_DIMENSION);
@@ -198,12 +214,12 @@ public class SideBar extends JPanel {
         btnPanel.add(resignBtn);
         btnPanel.add(drawBtn);
 
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 1;
-        
-        gbc.weightx = 1; 
+
+        gbc.weightx = 1;
         gbc.weighty = 0;
-        
+
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(4, 0, 0, 0);
         this.add(btnPanel, gbc);
@@ -212,16 +228,52 @@ public class SideBar extends JPanel {
         drawBtn.addActionListener(e -> onDraw());
     }
 
+    //===== SETTERS cho Button Listeners =====
+    public void setResignListener(ResignListener listener) {
+        this.resignListener = listener;
+    }
+
+    public void setDrawListener(DrawListener listener) {
+        this.drawListener = listener;
+    }
+
+    // Gọi từ MatchPanel sau mỗi nước đi để nút biết ai đang đầu hàng
+    public void setWhiteTurn(boolean whiteTurn) {
+        this.isWhiteTurn = whiteTurn;
+    }
+    //========================================
+
     private void onResign() {
-        System.out.println("Resign button clicked");
+        String side = isWhiteTurn ? "Trắng" : "Đen";
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                SwingUtilities.getWindowAncestor(this),
+                "Bạn (" + side + ") có chắc muốn đầu hàng không?",
+                "Xác nhận đầu hàng",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+        if (confirm == javax.swing.JOptionPane.YES_OPTION && resignListener != null) {
+            resignListener.onResign(isWhiteTurn);
+        }
     }
 
     private void onDraw() {
-        System.out.println("Draw button clicked");
+        String requester = isWhiteTurn ? "Trắng" : "Đen";
+        String opponent  = isWhiteTurn ? "Đen"   : "Trắng";
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                SwingUtilities.getWindowAncestor(this),
+                requester + " xin hòa. " + opponent + " có đồng ý không?",
+                "Xin hòa",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+        if (confirm == javax.swing.JOptionPane.YES_OPTION && drawListener != null) {
+            drawListener.onDraw();
+        }
     }
 
     //========================
-    
+
     //===== Chatbox =====
     private void initChat() {
         // ==============================
@@ -309,7 +361,7 @@ public class SideBar extends JPanel {
 
         this.add(chatPanel, gbc);
     }
-    
+
     private void onSendMessage() {
         String message = chatInput.getText().trim();
 
@@ -326,7 +378,7 @@ public class SideBar extends JPanel {
         chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
     //==================
-    
+
     //===== GAME OVER =====
     // Hiển thị thông báo kết thúc ván ngay trong bảng nước đi
     public void showGameOver(String message) {
@@ -366,7 +418,7 @@ public class SideBar extends JPanel {
         });
     }
     //=====================
-    
+
     //===== HELPERS =====
     private JLabel makeLabel(String text, Color fg, int align, Font font) {
         JLabel lbl = new JLabel(text, align);
@@ -393,4 +445,3 @@ public class SideBar extends JPanel {
     }
     //===================
 }
-

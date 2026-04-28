@@ -1,4 +1,4 @@
-package chess.database.Class;
+package com.chess.database.Class;
 
 import java.time.LocalDate;
 import org.mindrot.jbcrypt.BCrypt;

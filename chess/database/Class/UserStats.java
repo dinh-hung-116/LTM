@@ -1,4 +1,4 @@
-package chess.database.Class;
+package com.chess.database.Class;
 
 // LỚP NÀY DÙNG ĐỂ CHỨA CÁC THÔNG TIN VỀ THÀNH TÍCH CỦA NGƯỜI DÙNG
 public class UserStats {

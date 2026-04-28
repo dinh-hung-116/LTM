@@ -1,6 +1,6 @@
-package chess.gui.ui.lobby;
+package com.chess.gui.ui.lobby;
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

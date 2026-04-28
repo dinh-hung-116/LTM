@@ -1,6 +1,6 @@
-package chess.gui.match.matchinfo;
+package com.chess.gui.match.matchinfo;
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import java.awt.*;
 import javax.swing.*;
 
@@ -26,7 +26,7 @@ public class PlayerInfoPanel extends JPanel {
         playerInfoPanel.setOpaque(false); // inherit background
 
         // Avatar
-        avatarLabel = new JLabel(loadAvatar("/chess/gui/resources/user-image.png"));
+        avatarLabel = new JLabel(loadAvatar("/com/chess/gui/resources/user-image.png")); //muon chay thi them com vao
 
         // Player name
         playerInfo = new JLabel(name);
@@ -52,26 +52,31 @@ public class PlayerInfoPanel extends JPanel {
         this.add(playerInfoPanel, BorderLayout.WEST);
         this.add(clock, BorderLayout.EAST);
     }
-    
+
     // phương thức để lớp khác tương tác
     // chạy đồng hồ, dùng đồng hồ và làm mới đồng hồ
     public void startClock() {
         this.clock.startTimer();
     }
-    
+
     public void stopClock() {
         this.clock.pauseTimer();
     }
-    
+
     public void resetClock() {
         this.clock.resetTimer();
+    }
+
+    // Cập nhật tên người chơi (dùng khi bắt đầu ván online)
+    public void setUsername(String name) {
+        this.playerInfo.setText(name);
     }
 
     // phương thức lấy ảnh avatar của người chơi
     // Helper method to load & scale avatar
     private ImageIcon loadAvatar(String path) {
         ImageIcon icon = new ImageIcon(
-            getClass().getResource(path)
+                getClass().getResource(path)
         );
         Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         return new ImageIcon(img);

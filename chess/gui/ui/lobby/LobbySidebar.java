@@ -1,6 +1,6 @@
-package chess.gui.ui.lobby;
+package com.chess.gui.ui.lobby;
 
-import chess.gui.guiUtils;
+import com.chess.gui.guiUtils;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -18,6 +18,7 @@ public class LobbySidebar extends JPanel {
 
     private JLabel nameLabel;
     private JLabel eloLabel;
+    private JLabel statusLabel; // hiện trạng thái kết nối server
     private JButton activeBtn;
 
     // Giữ tham chiếu tới các nút nav để addNavListener() truy cập đúng
@@ -95,7 +96,7 @@ public class LobbySidebar extends JPanel {
         JLabel avatar = new JLabel();
         try {
             ImageIcon raw = new ImageIcon(
-                getClass().getResource("/chess/gui/resources/user-image.png"));
+                    getClass().getResource("/chess/gui/resources/user-image.png"));
             Image scaled = raw.getImage().getScaledInstance(36, 36, Image.SCALE_SMOOTH);
             avatar.setIcon(new ImageIcon(scaled));
         } catch (Exception ex) {
@@ -116,8 +117,13 @@ public class LobbySidebar extends JPanel {
         eloLabel.setFont(guiUtils.LOBBY_FONT_SMALL);
         eloLabel.setForeground(guiUtils.LOBBY_GREEN);
 
+        statusLabel = new JLabel("● Đang kết nối...");
+        statusLabel.setFont(guiUtils.LOBBY_FONT_SMALL);
+        statusLabel.setForeground(new java.awt.Color(200, 150, 50)); // màu vàng = đang chờ
+
         info.add(nameLabel);
         info.add(eloLabel);
+        info.add(statusLabel);
 
         p.add(avatar);
         p.add(info);
@@ -139,7 +145,7 @@ public class LobbySidebar extends JPanel {
         b.setPreferredSize(new Dimension(guiUtils.SIDEBAR_WIDTH, 44));
         b.setAlignmentX(CENTER_ALIGNMENT);
         b.setBorder(new EmptyBorder(0, 0, 0, 0));
-        // đặt property "card" cho button 
+        // đặt property "card" cho button
         b.putClientProperty("card", cardName); //card cho button
 
         b.addMouseListener(new MouseAdapter() {
@@ -156,8 +162,8 @@ public class LobbySidebar extends JPanel {
     private void selectBtn(JButton btn) {
         btn.setBackground(guiUtils.LOBBY_SIDEBAR_HOVER);
         btn.setBorder(new CompoundBorder(
-            new MatteBorder(0, 3, 0, 0, guiUtils.LOBBY_GREEN),
-            new EmptyBorder(0, 0, 0, 0)
+                new MatteBorder(0, 3, 0, 0, guiUtils.LOBBY_GREEN),
+                new EmptyBorder(0, 0, 0, 0)
         ));
         btn.setForeground(guiUtils.LOBBY_GREEN);
     }
@@ -176,8 +182,8 @@ public class LobbySidebar extends JPanel {
                 selectBtn(btn);
                 activeBtn = btn;
                 listener.actionPerformed(new ActionEvent(
-                    btn, ActionEvent.ACTION_PERFORMED,
-                    (String) btn.getClientProperty("card")
+                        btn, ActionEvent.ACTION_PERFORMED,
+                        (String) btn.getClientProperty("card")
                 ));
             });
         }
@@ -185,6 +191,19 @@ public class LobbySidebar extends JPanel {
 
     // ── Setters ───────────────────────────────────────────────
     public void setUsername(String name) { nameLabel.setText(name); }
+
+    /** Cập nhật trạng thái kết nối server hiển thị dưới tên người chơi */
+    public void setConnectionStatus(boolean connected) {
+        SwingUtilities.invokeLater(() -> {
+            if (connected) {
+                statusLabel.setText("● Online");
+                statusLabel.setForeground(new java.awt.Color(80, 180, 80)); // xanh
+            } else {
+                statusLabel.setText("● Mất kết nối");
+                statusLabel.setForeground(new java.awt.Color(200, 60, 60));  // đỏ
+            }
+        });
+    }
     public void setElo(int elo)          { eloLabel.setText("ELO: " + elo); }
 
     // ── Setters ───────────────────────────────────────────────

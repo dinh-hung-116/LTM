@@ -1,4 +1,4 @@
-package chess.database.Utils;
+package com.chess.database.Utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

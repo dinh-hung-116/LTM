@@ -1,4 +1,6 @@
-package chess.gui;
+package com.chess.gui.ui.lobby;
+
+import com.chess.gui.guiUtils;
 
 import java.awt.*;
 

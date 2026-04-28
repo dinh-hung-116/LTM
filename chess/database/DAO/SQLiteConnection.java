@@ -1,8 +1,8 @@
-package chess.database.DAO;
+package com.chess.database.DAO;
 
-import chess.database.Class.ChessMatch;
-import chess.database.Class.User;
-import chess.database.Class.UserStats;
+import com.chess.database.Class.ChessMatch;
+import com.chess.database.Class.User;
+import com.chess.database.Class.UserStats;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ Database
 */
 public class SQLiteConnection {
     // Chú ý: Cẩn thận với đường dẫn do phương thức .getAbsolutePath có thể bỏ qua root project
-    private static final String path = "C:\\Users\\DELL\\Documents\\SGU_CNTT_K23\\NAM3_HK2\\LTM\\DOAN\\LTM\\chess\\database\\DB\\ltmchess.db";
+    private static final String path = "D:\\Code\\Network\\Proj\\LTM\\chess\\database\\DB\\ltmchess.db";
     // LẤY ĐƯỜNG DẪN TUYỆT ĐỐI TỚI FILE CUAUR TỪNG THẰNG
     public static Connection getConnection() {
         // path có thể thay đổi dựa trên các cấu trúc thư mục khác

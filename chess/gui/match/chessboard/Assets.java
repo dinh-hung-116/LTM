@@ -1,4 +1,4 @@
-package chess.gui.match.chessboard;
+package com.chess.gui.match.chessboard;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -54,7 +54,7 @@ public class Assets {
     // 🔥 helper method (cleaner)
     private BufferedImage loadImage(String fileName) throws Exception {
         return ImageIO.read(
-            Assets.class.getResource("/chess/gui/resources/" + fileName)
+            Assets.class.getResource("/com/chess/gui/resources/" + fileName)
         );
     }
 }
