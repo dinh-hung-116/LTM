@@ -11,6 +11,7 @@ public class User {
     private String fullName; // họ và tên
     private String gender; //giới tính
     private LocalDate dateOfBirth; // yyyy-mm-dd 
+    // đặt transient để tạm thười bỏ qua trường này hi làm việc với json
 
     // dùng để chứa dữ liệu từ database
     public User(int userID, String userName, String passwordHash, String fullName, String gender, LocalDate dateOfBirth) {
@@ -23,6 +24,16 @@ public class User {
     }
 
     public User() {
+    }
+
+    // constructor dùng trong quá trình login
+    public User(String userName, String passwordHash) {
+        this.userName = userName;
+        this.passwordHash = passwordHash;
+        // dữ liệu rỗng
+        this.userID = -1;
+        this.fullName = this.gender = "null";
+        this.dateOfBirth = LocalDate.MIN;
     }
 
     // GETTER
@@ -51,6 +62,10 @@ public class User {
     }
     
     // SETTER
+    public void setUserId(int userID) {
+        this.userID = userID;
+    }
+    
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -75,7 +90,7 @@ public class User {
     public String toString() {
         return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + '}';
     }    
-    
+    /*
     // phương thức hash mật khẩu để lưu trữ trong database
     // phương thức này chủ yếu server dùng để lưu mặt khẩu hash
     protected String hashPassword(String password) {
@@ -87,4 +102,5 @@ public class User {
     protected boolean checkPassword(String plain, String hashed) {
         return BCrypt.checkpw(plain, hashed);
     }
+*/
 }

@@ -218,6 +218,7 @@ public class UserDAO {
 }
 
     
+    /*
     // HELPER: trả về biến User
     private static User mapResultSetToUser(ResultSet rs) throws SQLException {
         return new User(
@@ -228,5 +229,37 @@ public class UserDAO {
                 rs.getString("gender"),
                 LocalDate.parse(rs.getString("date_of_birth"))
         );
+    }
+*/
+    private static User mapResultSetToUser(ResultSet rs) throws SQLException {
+
+        User user = new User();
+        
+        user.setUserId(rs.getInt("user_id"));
+        user.setUserName(rs.getString("user_name"));
+        user.setFullName(rs.getString("full_name"));
+        user.setGender(rs.getString("gender"));
+
+        // =========================
+        // SAFE LocalDate parsing
+        // =========================
+        String dob = rs.getString("date_of_birth");
+
+        if (dob == null || dob.isBlank()) {
+            System.out.println("[UserDAO] dateOfBirth is NULL/EMPTY");
+            user.setDateOfBirth(null);
+        } else {
+            try {
+                user.setDateOfBirth(LocalDate.parse(dob));
+            } catch (Exception e) {
+                System.out.println("[UserDAO] Invalid date format: " + dob);
+                user.setDateOfBirth(null);
+            }
+        }
+
+        // DEBUG: print loaded user
+        System.out.println("[UserDAO] Loaded user: " + user);
+
+        return user;
     }
 }

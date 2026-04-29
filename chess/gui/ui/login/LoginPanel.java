@@ -1,7 +1,6 @@
 package chess.gui.ui.login;
 
 import chess.database.Class.User;
-import chess.database.DAO.UserDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,14 +12,16 @@ public class LoginPanel extends JPanel {
     private JButton loginBtn;
     private JButton registerBtn;
 
-    // Login success listener
-    public interface LoginListener {
-        void onLoginSuccess(User user);
+    // =========================
+    // OUTGOING EVENTS
+    // =========================
+    public interface LoginRequestListener {
+        void onLoginRequest(String username, String password);
     }
 
-    private LoginListener loginListener;
+    private LoginRequestListener loginRequestListener;
 
-    // Register button listener
+    // Register button listener, Runnable là một interface không tham số
     private Runnable registerListener;
 
     public LoginPanel() {
@@ -29,7 +30,11 @@ public class LoginPanel extends JPanel {
         setupActions();
     }
 
+    // =========================
+    // INIT UI
+    // =========================
     private void initComponents() {
+
         setBackground(new Color(38, 36, 33));
 
         userField = new JTextField(15);
@@ -55,10 +60,13 @@ public class LoginPanel extends JPanel {
         registerBtn.setFocusPainted(false);
         registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registerBtn.setOpaque(false);
-
     }
 
+    // =========================
+    // LAYOUT
+    // =========================
     private void setupLayout() {
+
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -105,6 +113,9 @@ public class LoginPanel extends JPanel {
         add(registerBtn, gbc);
     }
 
+    // =========================
+    // ACTIONS
+    // =========================
     private void setupActions() {
 
         loginBtn.addActionListener(e -> handleLogin());
@@ -118,13 +129,15 @@ public class LoginPanel extends JPanel {
         });
     }
 
+    // =========================
+    // LOGIN CLICK
+    // =========================
     private void handleLogin() {
 
         String username = userField.getText().trim();
         String password = new String(passField.getPassword()).trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-
             JOptionPane.showMessageDialog(
                     this,
                     "Vui lòng nhập đầy đủ thông tin!",
@@ -134,36 +147,53 @@ public class LoginPanel extends JPanel {
             return;
         }
 
-        User loggedInUser = UserDAO.checkLogin(username, password);
+        loginBtn.setEnabled(false);
+        registerBtn.setEnabled(false);
 
-        if (loggedInUser != null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Chào mừng " + loggedInUser.getFullName() + "!"
-            );
-
-            if (loginListener != null) {
-                loginListener.onLoginSuccess(loggedInUser);
-            }
-
-        } else {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Sai tài khoản hoặc mật khẩu!",
-                    "Lỗi đăng nhập",
-                    JOptionPane.ERROR_MESSAGE
-            );
+        if (loginRequestListener != null) {
+            loginRequestListener.onLoginRequest(username, password);
         }
     }
 
-    // Login listener
-    public void setLoginListener(LoginListener listener) {
-        this.loginListener = listener;
+    // =========================
+    // INCOMING RESPONSE METHODS
+    // Handler / GameFrame will call these
+    // =========================
+    public void loginSuccess(User user) {
+
+        loginBtn.setEnabled(true);
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Chào mừng " + user.getFullName() + "!"
+        );
     }
 
-    // Register listener
+    public void loginFailed() {
+
+        loginBtn.setEnabled(true);
+        passField.setText("");
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Sai tài khoản hoặc mật khẩu!",
+                "Lỗi đăng nhập",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    public void stopLoading() {
+        loginBtn.setEnabled(true);
+        registerBtn.setEnabled(true);
+    }
+
+    // =========================
+    // SETTERS
+    // =========================
+    public void setLoginRequestListener(LoginRequestListener listener) {
+        this.loginRequestListener = listener;
+    }
+
     public void setRegisterListener(Runnable listener) {
         this.registerListener = listener;
     }
