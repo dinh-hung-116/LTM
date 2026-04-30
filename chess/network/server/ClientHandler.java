@@ -1,138 +1,80 @@
 package chess.network.server;
 
-import chess.database.Class.User;
+import chess.network.session.UserSession;
 
 import java.io.*;
 import java.net.Socket;
 
-/**
- * ClientHandler_test
- *
- * Mỗi client kết nối vào server sẽ có 1 object này.
- * Nó chỉ làm 3 việc:
- *
- * 1. Đọc message từ socket
- * 2. Chuyển message lên ChessServer_test xử lý
- * 3. Gửi message ngược về client
- *
- * Không chứa business logic.
- */
 public class ClientHandler implements Runnable {
-
-    // =========================
-    // SOCKET
-    // =========================
+    // biến để gửi / nhận dữ liệu
     private final Socket socket;
-
-    // =========================
-    // I/O
-    // =========================
     private final BufferedReader reader;
     private final PrintWriter writer;
-
-    // =========================
-    // SERVER REFERENCE
-    // =========================
+    
+    // tham chiếu tới server để xử lý gói tin
     private final ChessServer server;
 
-    // =========================
-    // USER SESSION
-    // =========================
-    private User user;
-    private String username = "";
+    // Cứ để đây nếu sau này cần thì lấy ra dùng(thường là không)
+    private UserSession session;
 
-    // =========================
-    // STATUS
-    // =========================
     private volatile boolean running = true;
 
-    // =====================================================
-    // CONSTRUCTOR
-    // =====================================================
     public ClientHandler(Socket socket, ChessServer server) throws IOException {
-
         this.socket = socket;
         this.server = server;
 
         this.reader = new BufferedReader(
-                new InputStreamReader(
-                        socket.getInputStream()
-                )
+                new InputStreamReader(socket.getInputStream())
         );
 
         this.writer = new PrintWriter(
-                new OutputStreamWriter(
-                        socket.getOutputStream()
-                ),
-                true // auto flush
+                new OutputStreamWriter(socket.getOutputStream()),
+                true
         );
     }
 
-    // =====================================================
-    // MAIN LOOP
-    // =====================================================
     @Override
     public void run() {
-
-        log("Connected from "
-                + socket.getRemoteSocketAddress());
+        log("Connected from " + socket.getRemoteSocketAddress());
 
         try {
-
             String line;
 
-            while (running &&
-                    (line = reader.readLine()) != null) {
+            while (running && (line = reader.readLine()) != null) {
 
                 line = line.trim();
 
                 if (!line.isEmpty()) {
-
                     log("← " + line);
-
-                    // delegate to server
                     server.handleMessage(this, line);
                 }
             }
 
         } catch (IOException e) {
-
             if (running) {
-                log("Connection lost: "
-                        + e.getMessage());
+                log("Connection lost: " + e.getMessage());
             }
-
         } finally {
             disconnect();
         }
     }
 
-    // =====================================================
-    // SEND TO CLIENT
-    // =====================================================
+    // ================= SEND =================
     public synchronized void send(String message) {
-
         if (!socket.isClosed()) {
-
             log("→ " + message);
-
             writer.println(message);
         }
     }
 
-    // =====================================================
-    // DISCONNECT
-    // =====================================================
+    // ================= DISCONNECT =================
     public void disconnect() {
-
         running = false;
 
         try {
-
             if (!socket.isClosed()) {
                 socket.close();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,54 +84,41 @@ public class ClientHandler implements Runnable {
         log("Disconnected.");
     }
 
-    // =====================================================
-    // SESSION HELPERS
-    // =====================================================
+    // ================= SESSION =================
+    public void setSession(UserSession session) {
+        this.session = session;
+    }
+
+    public UserSession getSession() {
+        return session;
+    }
+
+    public String getUsername() {
+        return session != null ? session.getUsername() : "";
+    }
+
+    // ================= STATUS =================
     public boolean isConnected() {
         return running && !socket.isClosed();
     }
 
     public boolean isLoggedIn() {
-        return user != null;
-    }
-
-    // =====================================================
-    // GETTER / SETTER
-    // =====================================================
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-
-        this.user = user;
-
-        if (user != null) {
-            this.username = user.getUserName();
-        } else {
-            this.username = "";
-        }
-    }
-
-    public String getUsername() {
-        return username;
+        return session != null;
     }
 
     public Socket getSocket() {
         return socket;
     }
 
-    // =====================================================
-    // LOG
-    // =====================================================
+    // ================= LOG =================
     private void log(String msg) {
 
         String tag;
 
-        if (username == null || username.isEmpty()) {
+        if (session == null || session.getUsername() == null) {
             tag = socket.getRemoteSocketAddress().toString();
         } else {
-            tag = username;
+            tag = session.getUsername();
         }
 
         System.out.println(
