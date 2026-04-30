@@ -1,6 +1,6 @@
 package chess.network.transportpacket;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 
 /*
 json của object sẽ như thế này:

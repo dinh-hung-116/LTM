@@ -1,6 +1,6 @@
 package chess.database.DAO;
 
-import chess.database.Class.UserStats;
+import chess.database.DTO.UserStats;
 
 import java.sql.*;
 import java.util.ArrayList;

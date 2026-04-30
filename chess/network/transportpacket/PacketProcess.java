@@ -1,6 +1,6 @@
 package chess.network.transportpacket;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import chess.network.GsonUtil;
 import chess.network.NetworkConfig;
 import com.google.gson.Gson;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
  * 
  * */
 
-public class PacketProccess {
+public class PacketProcess {
 
     public static final String NA = "N/A";
     private static final Gson gson = GsonUtil.createGson();
@@ -127,8 +127,8 @@ public class PacketProccess {
         user.setUserId(0);
         user.setUserName(username);
         user.setPasswordHash(password);
-        user.setGender(NA);
-        user.setDateOfBirth(LocalDate.MIN);
+        user.setGender(null);
+        user.setDateOfBirth(null);
         
         return user;
     }

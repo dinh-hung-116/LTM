@@ -1,6 +1,6 @@
 package chess.database.DAO;
 
-import chess.database.Class.ChessMatch;
+import chess.database.DTO.ChessMatch;
 import chess.database.Utils.DateTimeUtil;
 
 import java.sql.*;

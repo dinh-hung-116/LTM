@@ -1,11 +1,11 @@
 package chess.network.client;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import chess.gui.GameFrame;
 import chess.network.GsonUtil;
 import chess.network.NetworkConfig;
 import chess.network.transportpacket.LoginPacket;
-import chess.network.transportpacket.PacketProccess;
+import chess.network.transportpacket.PacketProcess;
 import com.google.gson.Gson;
 import java.time.LocalDate;
 
@@ -43,16 +43,16 @@ public class Handler {
     // LOGIN REQUEST
     public void loginRequest(String username, String password) {
 
-        LoginPacket packet = PacketProccess.craftLoginRequestPacket(username, password);
+        LoginPacket packet = PacketProcess.craftLoginRequestPacket(username, password);
 
-        networkClient.send(PacketProccess.toJson(packet));
+        networkClient.send(PacketProcess.toJson(packet));
         
     }
 
     // PARSE LOGIN RESPONSE
     public User loginResponse(String json) {
 
-        LoginPacket packet = PacketProccess.fromJson(json, LoginPacket.class);
+        LoginPacket packet = PacketProcess.fromJson(json, LoginPacket.class);
 
         if (packet.getResult() != null && packet.getResult().equals(NetworkConfig.LOGIN_OK)) {
             return packet.getUser();
@@ -67,15 +67,15 @@ public class Handler {
     // REGISTER REQUEST
     public void registerRequest(User user) {
 
-        LoginPacket packet = PacketProccess.craftRegisterRequestPacket(user);
+        LoginPacket packet = PacketProcess.craftRegisterRequestPacket(user);
 
-        networkClient.send(PacketProccess.toJson(packet));
+        networkClient.send(PacketProcess.toJson(packet));
     }
     
     // REGISTER RESPONSE
     public boolean registerResponse(String json) {
 
-        LoginPacket packet = PacketProccess.fromJson(json, LoginPacket.class);
+        LoginPacket packet = PacketProcess.fromJson(json, LoginPacket.class);
 
         return NetworkConfig.REGISTER_OK.equals(packet.getResult());
     }
@@ -86,9 +86,9 @@ public class Handler {
     // LOGOUT REQUEST
     public void logoutRequest() {
 
-        LoginPacket packet = PacketProccess.craftLogoutRequestPacket();
+        LoginPacket packet = PacketProcess.craftLogoutRequestPacket();
 
-        networkClient.send(PacketProccess.toJson(packet));
+        networkClient.send(PacketProcess.toJson(packet));
     }
 
     // =====================================================
@@ -97,7 +97,7 @@ public class Handler {
     public void handleServerMessage(String msg) {
 
         try {
-            String header = PacketProccess.getPacketHeader(msg);
+            String header = PacketProcess.getPacketHeader(msg);
 
             if (header == null) {
                 System.out.println("Invalid packet header");

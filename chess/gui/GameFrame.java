@@ -1,6 +1,6 @@
 package chess.gui;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import chess.gui.match.MatchPanel;
 import chess.gui.ui.lobby.LobbyPanel;
 import chess.gui.ui.login.LoginPanel;

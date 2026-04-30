@@ -1,8 +1,8 @@
 package chess.database.DAO;
 
-import chess.database.Class.ChessMatch;
-import chess.database.Class.User;
-import chess.database.Class.UserStats;
+import chess.database.DTO.ChessMatch;
+import chess.database.DTO.User;
+import chess.database.DTO.UserStats;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

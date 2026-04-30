@@ -1,6 +1,5 @@
 package chess.network.server;
 
-import chess.network.session.UserSession;
 
 import java.io.*;
 import java.net.Socket;

@@ -1,6 +1,6 @@
 package chess.database.DAO;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import java.util.ArrayList;
 import java.sql.*;
 import java.time.LocalDate;

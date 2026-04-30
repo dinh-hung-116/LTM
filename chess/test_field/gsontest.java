@@ -1,10 +1,10 @@
 package chess.test_field;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import chess.gui.match.chessboard.Assets;
 import chess.network.GsonUtil;
 import chess.network.transportpacket.LoginPacket;
-import chess.network.transportpacket.PacketProccess;
+import chess.network.transportpacket.PacketProcess;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,7 +45,7 @@ public class gsontest {
         Gson gson = GsonUtil.createGson();
 
         // Create object -> JSON
-        LoginPacket sendPacket = PacketProccess.craftLoginResponsePacket(false, new User());
+        LoginPacket sendPacket = PacketProcess.craftLoginResponsePacket(false, new User());
 
         String json = gson.toJson(sendPacket);
         System.out.println("JSON Output:");

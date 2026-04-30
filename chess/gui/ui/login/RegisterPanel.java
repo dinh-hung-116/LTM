@@ -1,6 +1,6 @@
 package chess.gui.ui.login;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 
 import javax.swing.*;
 import java.awt.*;

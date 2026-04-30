@@ -1,11 +1,10 @@
 package chess.network.server;
 
-import chess.database.Class.User;
+import chess.database.DTO.User;
 import chess.database.DAO.UserDAO;
 import chess.network.NetworkConfig;
-import chess.network.session.UserSession;
 import chess.network.transportpacket.LoginPacket;
-import chess.network.transportpacket.PacketProccess;
+import chess.network.transportpacket.PacketProcess;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -69,7 +68,7 @@ public class ChessServer {
     public void handleMessage(ClientHandler client, String raw) {
         try {
             // Lấy ra type(hoặc gọi là header)
-            String header = PacketProccess.getPacketHeader(raw);
+            String header = PacketProcess.getPacketHeader(raw);
 
             if (header == null) {
                 log("Invalid packet.");
@@ -97,14 +96,14 @@ public class ChessServer {
     // ========================= LOGIN =========================
     private void handleLogin(ClientHandler client, String raw) {
         try {
-            LoginPacket request = PacketProccess.fromJson(raw, LoginPacket.class);
+            LoginPacket request = PacketProcess.fromJson(raw, LoginPacket.class);
 
             LoginPacket response;
             
             // nếu packet null hoặc không có User -> Người dùng ẩn danh
             if (request == null || request.getUser() == null) {
-                response = PacketProccess.craftLoginResponsePacket(false, new User());
-                client.send(PacketProccess.toJson(response));
+                response = PacketProcess.craftLoginResponsePacket(false, new User());
+                client.send(PacketProcess.toJson(response));
                 return;
             }
 
@@ -121,15 +120,15 @@ public class ChessServer {
 
                 connectedUsers.put(username, session);
 
-                response = PacketProccess.craftLoginResponsePacket(true, loginUser);
+                response = PacketProcess.craftLoginResponsePacket(true, loginUser);
 
                 log(username + " login success");
             } else {
-                response = PacketProccess.craftLoginResponsePacket(false, new User());
+                response = PacketProcess.craftLoginResponsePacket(false, new User());
                 log(username + " login fail");
             }
 
-            client.send(PacketProccess.toJson(response));
+            client.send(PacketProcess.toJson(response));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,24 +140,24 @@ public class ChessServer {
 
         try {
             LoginPacket request =
-                    PacketProccess.fromJson(raw, LoginPacket.class);
+                    PacketProcess.fromJson(raw, LoginPacket.class);
 
             User user = request.getUser();
 
             boolean ok = UserDAO.registerUser(user, 1200);
 
             // nếu thêm được người dùng thì gửi thông báo ok
-            LoginPacket response = PacketProccess.craftRegisterResponsePacket(ok);
+            LoginPacket response = PacketProcess.craftRegisterResponsePacket(ok);
 
-            client.send(PacketProccess.toJson(response));
+            client.send(PacketProcess.toJson(response));
 
         } catch (Exception e) {
             e.printStackTrace();
 
             LoginPacket fail =
-                    PacketProccess.craftRegisterResponsePacket(false);
+                    PacketProcess.craftRegisterResponsePacket(false);
 
-            client.send(PacketProccess.toJson(fail));
+            client.send(PacketProcess.toJson(fail));
         }
     }
 
@@ -180,9 +179,9 @@ public class ChessServer {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            LoginPacket response = PacketProccess.craftLogoutResponsePacket();
+            LoginPacket response = PacketProcess.craftLogoutResponsePacket();
 
-            client.send(PacketProccess.toJson(response));
+            client.send(PacketProcess.toJson(response));
         }
     }
 

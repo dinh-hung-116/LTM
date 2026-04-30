@@ -1,7 +1,6 @@
-package chess.network.session;
+package chess.network.server;
 
-import chess.database.Class.User;
-import chess.network.server.ClientHandler;
+import chess.database.DTO.User;
 
 
 /**
