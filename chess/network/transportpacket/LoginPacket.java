@@ -15,6 +15,8 @@ User: ...
 trong việc gửi/nhận dữ liệu.
 ***********
 
+login request: username + password -> User
+server response: User 
 */
 public class LoginPacket extends Packet {
     // biến để chứa kết quả trả về từ server: LOGIN_OK ? LOGIN_FAIL
@@ -25,7 +27,7 @@ public class LoginPacket extends Packet {
     public LoginPacket() {
     }
 
-    public LoginPacket(String result, String type) {
+    public LoginPacket(String type, String result) {
         super(type);
         this.result = result;
     }

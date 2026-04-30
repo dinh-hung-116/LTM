@@ -1,6 +1,15 @@
 package chess.test_field;
 
+import chess.database.Class.User;
+import chess.gui.match.chessboard.Assets;
+import chess.network.GsonUtil;
+import chess.network.transportpacket.LoginPacket;
+import chess.network.transportpacket.PacketProccess;
 import com.google.gson.Gson;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.imageio.ImageIO;
 
 
 public class gsontest {    
@@ -32,22 +41,23 @@ public class gsontest {
         }
     }
     
-    public static void main(String[] args) {
-        Gson gson = new Gson();
+    public static void main(String[] args) throws IOException {
+        Gson gson = GsonUtil.createGson();
 
         // Create object -> JSON
-        Packet sendPacket = new Packet();
-        sendPacket.dumpPacket("ok");
+        LoginPacket sendPacket = PacketProccess.craftLoginResponsePacket(false, new User());
 
         String json = gson.toJson(sendPacket);
         System.out.println("JSON Output:");
         System.out.println(json);
 
         // JSON -> Object
-        Packet receivedPacket = gson.fromJson(json, Packet.class);
+        LoginPacket receivedPacket = gson.fromJson(json, LoginPacket.class);
 
         System.out.println("\nParsed Object:");
-        System.out.println("Packet: " + receivedPacket.message);
+        System.out.println("Packet: " + receivedPacket.getUser());
+        
+        System.out.println(Paths.get("BP.png").toAbsolutePath());
     }
 }
 

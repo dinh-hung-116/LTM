@@ -19,7 +19,7 @@ public class LobbySidebar extends JPanel {
     private JLabel nameLabel;
     private JLabel eloLabel;
     private JButton activeBtn;
-
+    
     // Giữ tham chiếu tới các nút nav để addNavListener() truy cập đúng
     private final List<JButton> navButtons = new ArrayList<>();
 

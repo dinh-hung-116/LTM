@@ -26,16 +26,6 @@ public class User {
     public User() {
     }
 
-    // constructor dùng trong quá trình login
-    public User(String userName, String passwordHash) {
-        this.userName = userName;
-        this.passwordHash = passwordHash;
-        // dữ liệu rỗng
-        this.userID = -1;
-        this.fullName = this.gender = "null";
-        this.dateOfBirth = LocalDate.MIN;
-    }
-
     // GETTER
     public long getUserID() {
         return userID;

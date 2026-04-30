@@ -1,16 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package chess.network.transportpacket;
 
 /**
- *
- * @author DELL
+ * Lớp cha của mọi Packet
+ * 
  */
+
 public class Packet {    
     // gói tin là loại gì? LOGIN? MOVE?....
-    protected String type;
+    protected String type; // hoặc header
 
     public Packet() {
         // Needed for Gson deserialization

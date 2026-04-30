@@ -4,6 +4,7 @@ import chess.database.Class.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class LoginPanel extends JPanel {
 
@@ -160,7 +161,9 @@ public class LoginPanel extends JPanel {
     // Handler / GameFrame will call these
     // =========================
     public void loginSuccess(User user) {
-
+        // xóa hết dữ liệu cho lần đăng nhập kế tiếp
+        wipeLoginData();
+        
         loginBtn.setEnabled(true);
 
         JOptionPane.showMessageDialog(
@@ -186,7 +189,17 @@ public class LoginPanel extends JPanel {
         loginBtn.setEnabled(true);
         registerBtn.setEnabled(true);
     }
-
+    
+    public void wipeLoginData() {
+        char[] pwd = this.passField.getPassword();
+        // nếu passField có dữ liệu thì xóa hết bằng cách thay bằng kí tự '\0'(kí tự kết thúc dòng -> chuỗi rỗng) 
+        if(pwd != null) Arrays.fill(pwd, '\0');
+        
+        // xóa dữ liệu trên giao diện
+        this.userField.setText("");
+        this.passField.setText("");
+    }
+    
     // =========================
     // SETTERS
     // =========================

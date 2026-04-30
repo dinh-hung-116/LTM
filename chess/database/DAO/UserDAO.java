@@ -61,6 +61,35 @@ public class UserDAO {
         return result;
     }
     
+    // Lấy người dùng theo username
+    public static User getUserbyUsername(String username) {
+        String sql = "SELECT * FROM user where user_name = ?;";
+        User result = null;
+        
+        try (
+                // Thiết lập kết nối -> chuẩn bị câu truy vấn -> chạy và lấy kết quả
+                Connection conn = SQLiteConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);) {
+                
+            // gán dữ liệu(dấu chấm hỏi) 
+            ps.setString(1, username);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            // Lấy dữ liệu và trả về User, do kết quả chỉ có một bản ghi nên không cần while
+            if(rs.next()) {
+                result = mapResultSetToUser(rs);
+                
+                // giải phóng tài nguyên
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
+    
     // Thêm người dùng mới 
     // Lệnh này có thay đổi cấu trúc bảng nên dùng executeUpdate() chứ không phải executeQuery()
     // vì một lí do gì đó mà việc insert thông qua method này không cần user_ID nhưng trong csdl thì vẫn cần?:]

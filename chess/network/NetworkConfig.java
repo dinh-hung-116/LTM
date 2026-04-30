@@ -34,12 +34,19 @@ public final class NetworkConfig {
     // Server xác nhận đăng nhập không thành công
     public static final String LOGIN_FAIL = "LOGIN_FAIL";
     
-    // --- ĐĂNG KÝ/ REGISTER ---
+    // --- ĐĂNG KÝ / REGISTER ---
     public static final String REGISTER_REQUEST = "REGISTER_REQUEST";
     public static final String REGISTER_RESPONSE = "REGISTER_RESPONSE";
 
     public static final String REGISTER_OK = "REGISTER_OK";
     public static final String REGISTER_FAIL = "REGISTER_FAIL";
+    
+    // --- ĐĂNG XUẤT / LOGOUT ---
+    public static final String LOGOUT_REQUEST = "LOGOUT_REQUEST";
+    public static final String LOGOUT_RESPONSE = "LOGOUT_RESPONSE";
+
+    public static final String LOGOUT_OK = "LOGOUT_OK";
+    //public static final String LOGOUT_FAIL = "LOGOUT_FAIL";
 
     // --- Tìm trận ---
     public static final String FIND_MATCH      = "FIND_MATCH";      // client → server: vào hàng đợi

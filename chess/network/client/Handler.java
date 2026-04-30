@@ -5,12 +5,13 @@ import chess.gui.GameFrame;
 import chess.network.GsonUtil;
 import chess.network.NetworkConfig;
 import chess.network.transportpacket.LoginPacket;
+import chess.network.transportpacket.PacketProccess;
 import com.google.gson.Gson;
+import java.time.LocalDate;
 
 import javax.swing.*;
 
 public class Handler {
-
     private GameFrame frame;
     private NetworkClient networkClient;
 
@@ -40,35 +41,20 @@ public class Handler {
     // =====================================================
 
     // LOGIN REQUEST
-    public void LoginRequest(String username, String password) {
+    public void loginRequest(String username, String password) {
 
-        LoginPacket packet = new LoginPacket();
+        LoginPacket packet = PacketProccess.craftLoginRequestPacket(username, password);
 
-        packet.setType(NetworkConfig.LOGIN_REQUEST);
-        packet.setResult("");
-
-        // TEMP:
-        // later use packet.setUsername(username)
-        // later use packet.setPassword(password)
-
-        // if packet has user object:
-        User tempUser = new User(username, password);
-
-        packet.setUser(tempUser);
-
-        String json = gson.toJson(packet);
-
-        networkClient.send(json);
+        networkClient.send(PacketProccess.toJson(packet));
+        
     }
 
     // PARSE LOGIN RESPONSE
-    public User LoginResponse(String json) {
+    public User loginResponse(String json) {
 
-        LoginPacket packet = gson.fromJson(json, LoginPacket.class);
+        LoginPacket packet = PacketProccess.fromJson(json, LoginPacket.class);
 
-        if (packet.getResult() != null &&
-                packet.getResult().equals(NetworkConfig.LOGIN_OK)) {
-
+        if (packet.getResult() != null && packet.getResult().equals(NetworkConfig.LOGIN_OK)) {
             return packet.getUser();
         }
 
@@ -81,23 +67,28 @@ public class Handler {
     // REGISTER REQUEST
     public void registerRequest(User user) {
 
-        LoginPacket packet = new LoginPacket();
+        LoginPacket packet = PacketProccess.craftRegisterRequestPacket(user);
 
-        packet.setType(NetworkConfig.REGISTER_REQUEST);
-        packet.setUser(user);
-        packet.setResult("");
-
-        String json = gson.toJson(packet);
-
-        networkClient.send(json);
+        networkClient.send(PacketProccess.toJson(packet));
     }
     
     // REGISTER RESPONSE
     public boolean registerResponse(String json) {
 
-        LoginPacket packet = gson.fromJson(json, LoginPacket.class);
+        LoginPacket packet = PacketProccess.fromJson(json, LoginPacket.class);
 
         return NetworkConfig.REGISTER_OK.equals(packet.getResult());
+    }
+    
+    //==========================
+    // LOGOUT
+    // ==========================
+    // LOGOUT REQUEST
+    public void logoutRequest() {
+
+        LoginPacket packet = PacketProccess.craftLogoutRequestPacket();
+
+        networkClient.send(PacketProccess.toJson(packet));
     }
 
     // =====================================================
@@ -106,18 +97,17 @@ public class Handler {
     public void handleServerMessage(String msg) {
 
         try {
+            String header = PacketProccess.getPacketHeader(msg);
 
-            PacketHeader header = gson.fromJson(msg, PacketHeader.class);
-
-            if (header == null || header.type == null) {
+            if (header == null) {
                 System.out.println("Invalid packet header");
                 return;
             }
 
-            switch (header.type) {
+            switch (header) {
                 // GÓI TIN LOGIN
                 case NetworkConfig.LOGIN_RESPONSE -> {
-                    User loginUser = LoginResponse(msg);
+                    User loginUser = loginResponse(msg);
 
                     SwingUtilities.invokeLater(() -> {
 
@@ -137,14 +127,12 @@ public class Handler {
                     if (success) {
                         frame.onRegisterSuccess();
                     } else {
-                        frame.onRegisterFail(
-                            "Tên đăng nhập đã tồn tại!"
-                        );
+                        frame.onRegisterFail("Tên đăng nhập đã tồn tại!");
                     }
                     break;
                 }
 
-                default -> System.out.println("Unknown packet type: " + header.type);
+                default -> System.out.println("Unknown packet type: " + header);
             }
 
         } catch (Exception e) {
@@ -152,11 +140,4 @@ public class Handler {
         }
     }
 
-    // =====================================================
-    // SMALL HELPER CLASS
-    // only read packet type first
-    // =====================================================
-    private class PacketHeader {
-        String type;
-    }
 }

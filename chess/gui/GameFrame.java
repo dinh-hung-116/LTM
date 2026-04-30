@@ -107,7 +107,7 @@ public class GameFrame {
 
         // LOGIN REQUEST - handler
         loginPanel.setLoginRequestListener((username, password) -> {
-            handler.LoginRequest(username, password);
+            handler.loginRequest(username, password);
         });
 
         // LOGIN PANEL -> REGISTER PANEL
@@ -124,6 +124,9 @@ public class GameFrame {
         registerPanel.setRegisterRequestListener(user -> {
             handler.registerRequest(user);
         });
+        
+        // LOGOUT REQUEST
+        this.lobbyPanel.getLobbySidebar().addLogoutListener(e -> onLogout());
         
     }
 
@@ -170,6 +173,18 @@ public class GameFrame {
 
     public void onRegisterFail(String message) {
         registerPanel.showRegisterFail(message);
+    }
+    
+    // =========================
+    // LOGOUT
+    // =========================
+    // quá trình logout không cần handler gọi phương thức cập nhật gui
+    // handler chỉ đảm nhận quá trình gửi yêu cầu đến cho server, gui sẽ tự cập nhập
+    public void onLogout() {
+        // gửi yêu cầu
+        handler.logoutRequest();
+        // trở về màn hình đăng nhập(login)
+        showLogin();
     }
     //=========================
 

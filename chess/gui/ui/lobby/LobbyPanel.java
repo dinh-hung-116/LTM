@@ -52,7 +52,7 @@ public class LobbyPanel extends JPanel {
     public ProfilePanel        getProfilePanel()         { return profilePanel; }
     public FindMatchPanel      getFindMatchPanel()        { return findMatchPanel; }
     public OngoingMatchesPanel getOngoingMatchesPanel()  { return ongoingMatchesPanel; }
-    public LobbySidebar        getSidebar()              { return sidebar; }
+    public LobbySidebar        getLobbySidebar()              { return sidebar; }
     public LeaderboardPanel getLeaderboarPanel () {return this.leaderboardPanel; }
 
     // ── Preview standalone ────────────────────────────────────
